@@ -3,6 +3,8 @@ use ggez::event;
 use ggez::graphics;
 use ggez::nalgebra as na;
 
+const WINDOW_W: u32 = 500;
+const WINDOW_H: u32 = 500;
 
 struct MainState {
     pos_x: f32,
@@ -40,7 +42,7 @@ impl event::EventHandler for MainState {
 }
 
 pub fn start() -> ggez::GameResult { 
-    let cb = ggez::ContextBuilder::new("super_simple", "ggez");
+    let cb = ggez::ContextBuilder::new("Muehle", "Rust-Atzen");
     let (ctx, event_loop) = &mut cb.build()?;
     let state = &mut MainState::new()?;
     event::run(ctx, event_loop, state)
