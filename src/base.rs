@@ -11,7 +11,6 @@ pub mod base{
 
         pub board: Vec<(i8,i8,i8)>,
         pub p1_mode: PlayMode,
-        pub p2_mode: PlayMode
         pub p2_mode: PlayMode,
         pub turn: i8,
     }
@@ -54,20 +53,14 @@ pub mod base{
 
         }
 
-<<<<<<< HEAD
         /*pub fn change(&mut self, x:i8, y:i8, player:i8){
-=======
        /* pub fn change(&mut self, x:i8, y:i8, player:i8){
->>>>>>> 6f0d6141381d06b7cae61575a4a9000502af24f5
             for field in &mut self.board{
                 
             }
             return true;
-<<<<<<< HEAD
         }*/
-=======
         } */
->>>>>>> 6f0d6141381d06b7cae61575a4a9000502af24f5
 
         pub fn spot_muehle(&self,fd:(i8,i8,i8))->bool{
             let mut x_counter:i8= 0;
