@@ -84,6 +84,34 @@ pub mod base{
 
         }
 
+        pub fn move_control(&self,from:(i8,i8,i8),to:(i8,i8,i8)) -> bool{
+            if to.2 != 0 {
+                return false
+            }
+            if self.turn != from.2 {
+                return false
+            }
+            if from.0 == to.0 || from.1 == to.1 {
+                return true
+            }
+            if self.turn == 1  {
+                match self.p1_mode {
+                    PlayMode::Place => return false,
+                    PlayMode::Move => return false,
+                    PlayMode::Jump => return true
+                }
+            }
+            if self.turn == -1 {
+                match self.p2_mode {
+                    PlayMode::Place => return false,
+                    PlayMode::Move => return false,
+                    PlayMode::Jump => return true
+                }
+            } else {
+                return false
+            }
+        }
+
 
 
     }
