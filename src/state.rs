@@ -40,6 +40,27 @@ pub mod state{
             }
 
         }
+
+        pub fn spotMuehle(std:State,fd:(i8,i8,i8))->bool{
+            let mut xCounter:i8= 0;
+            let mut yCounter:i8= 0;
+            for field in std.board.iter() {
+                if field.2 == fd.2 {
+                    if field.0 == fd.0 {
+                        xCounter += 1;
+                    }
+                    if field.1 == fd.1 {
+                        yCounter += 1;
+                    }
+                }
+            }
+            if xCounter>2 || yCounter>2 {
+                return true
+            } else {
+                return false
+            }
+
+        }
     }
 
 
