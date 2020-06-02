@@ -1,5 +1,5 @@
-mod state;
-use state::state::State;
+mod base;   
+use base::base::State;
 
 fn main() {
     println!("Hello, world!");
