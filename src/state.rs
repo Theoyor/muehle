@@ -44,6 +44,7 @@ pub mod state{
         pub fn spotMuehle(std:State,fd:(i8,i8,i8))->bool{
             let mut xCounter:i8= 0;
             let mut yCounter:i8= 0;
+            // Zählt die Felder mit den gleichen x oder y Koordinaten und dem selben Spieler. Wenn der Counter 3 ist ist der Stein Teil einer Mühle.
             for field in std.board.iter() {
                 if field.2 == fd.2 {
                     if field.0 == fd.0 {
