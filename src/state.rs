@@ -4,6 +4,7 @@ pub mod state{
         //* p = 1 von Spieler 1 besetzt und bei p = -1 von Spieler 2 (bzw. dem Computer) besetzt
 
         pub board: Vec<(i8,i8,i8)>
+        
     }
 
     impl State{
@@ -34,23 +35,24 @@ pub mod state{
                     print!("{:?} ",field.2 );
                     i += 1;
                 }else if i == 2{
-                    println!("{:?}", field.2);
+                    println!("{:?} ", field.2);
                     i = 0;
                 }
             }
 
         }
 
-        pub fn place(&mut self, x:i8, y:i8)->bool{
-            
+        pub fn change(&mut self, x:i8, y:i8){
+            for field in &mut self.board{
 
+            }
             return true;
         }
 
         pub fn spotMuehle(std:State,fd:(i8,i8,i8))->bool{
             let mut xCounter:i8= 0;
             let mut yCounter:i8= 0;
-            // Zählt die Felder mit den gleichen x oder y Koordinaten und dem selben Spieler. Wenn der Counter 3 ist ist der Stein Teil einer Mühle.
+            //* Zählt die Felder mit den gleichen x oder y Koordinaten und dem selben Spieler. Wenn der Counter 3 ist ist der Stein Teil einer Mühle.
             for field in std.board.iter() {
                 if field.2 == fd.2 {
                     if field.0 == fd.0 {
