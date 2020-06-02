@@ -53,12 +53,12 @@ pub mod base{
 
         }
 
-        pub fn change(&mut self, x:i8, y:i8, player:i8){
+       /* pub fn change(&mut self, x:i8, y:i8, player:i8){
             for field in &mut self.board{
                 
             }
             return true;
-        }
+        } */
 
         pub fn spot_muehle(&self,fd:(i8,i8,i8))->bool{
             let mut x_counter:i8= 0;
@@ -81,6 +81,8 @@ pub mod base{
             }
 
         }
+
+
 
     }
 
