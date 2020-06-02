@@ -3,13 +3,17 @@
 pub mod base{
     use heapless::Vec;
     use heapless::consts::U24;
+    
 
+
+    #[derive(Clone)]
     pub enum PlayMode{
         Place,
         Move,
         Jump,
     }
 
+    #[derive(Clone)]
     pub struct State{
         //* (x,y,p) ist ein field mit x: x-Achse des Feldes, y: y-Achse des Feldes, und bei p = 0 ist Field unbesetzt
         //* p = 1 von Spieler 1 besetzt und bei p = -1 von Spieler 2 (bzw. dem Computer) besetzt
@@ -34,41 +38,62 @@ pub mod base{
                 turn: 1, //TODO evtl. Seiten auswaehlen
             }
         }
+        /* Unwichtig geworden, falls von jemand anderem benötigt, kann es wieder auskommentiert werden
 
         pub fn sort_by_lines(&self) -> Vec<(i8,i8,i8), U24>{
             let mut ret: Vec<(i8,i8,i8), U24> = Vec::new();
             for i in 1..8{
                 for field in &self.board {
-                    if field.2 == i{
-                        ret.push(*field);
+                    if field.1 == i{
+                        match ret.push(*field){
+                            Ok(_) =>{},
+                            Err(n) => println!("{:?} konnte nicht angehängt werden", n)
+                        }; 
                     } 
                 }
             }
             return ret;
         }
-
+        */
+        
         pub fn printm(&self){
-            let lined_board = self.sort_by_lines();
-            let mut i = 0;
-            for field in lined_board {
-                if i<=1{
-                    print!("{:?} ",field.2 );
-                    i += 1;
-                }else if i == 2{
-                    println!("{:?} ", field.2);
-                    i = 0;
+            
+            for x in 1..8{
+                for y in 1..8 {
+                    let mut cont = false;
+                    for field in &self.board{
+                        if field.0 == y && field.1 ==x{
+                            print!("{}", field.2);
+                            cont = true;
+                            break;
+                        }
+                    }
+                    if !cont{
+                        print!(" ")
+                    }
                 }
+                println!{""};
             }
 
         }
 
         
-        pub fn change(&mut self, x:i8, y:i8, player:i8){
-            for field in &mut self.board{
+        pub fn change(&self, x:i8, y:i8, player:i8)->Result<State,&str>{
+            //gibt Ok(State) mit verändertem State zurück oder einen String-Error
+            let mut st = self.clone();
+            
+            for field in &mut st.board{
                 if field.0 == x && field.1 == y{
 
+                    if field.2 == 0{
+                        *field = (x,y,player);
+                        return Ok(st);
+                    }else{
+                        return Err("Feld ist besetzt");
+                    }    
                 }
             }
+            Err("Feld existiert nicht")
         }
 
         pub fn spot_muehle(&self,fd:(i8,i8,i8))->bool{
