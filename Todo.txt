@@ -1,0 +1,8 @@
+ggez:
+	Input
+	Graphik
+
+Spiel:
+	Überprüfen
+	Ziehen: Move, place, remove
+	

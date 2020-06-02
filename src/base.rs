@@ -11,7 +11,8 @@ pub mod base{
 
         pub board: Vec<(i8,i8,i8)>,
         pub p1_mode: PlayMode,
-        pub p2_mode: PlayMode
+        pub p2_mode: PlayMode,
+        pub turn: i8,
     }
 
     impl State{
@@ -21,6 +22,7 @@ pub mod base{
                 board : vec![(1,1,0),(1,4,0),(1,7,0),(2,2,0),(2,4,0),(2,6,0),(3,3,0),(3,4,0),(3,5,0),(4,1,0),(4,2,0),(4,3,0),(4,5,0),(4,6,0),(4,7,0),(5,3,0),(5,4,0),(5,5,0),(6,2,0),(6,4,0),(6,6,0),(7,1,0),(7,4,0),(7,7,0)],
                 p1_mode: PlayMode::Place,
                 p2_mode: PlayMode::Place,
+                turn: 1, //TODO evtl. Seiten auswaehlen
             }
         }
 
