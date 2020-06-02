@@ -51,9 +51,9 @@ pub mod base{
 
         }
 
-        pub fn change(&mut self, x:i8, y:i8){
+        pub fn change(&mut self, x:i8, y:i8, player:i8){
             for field in &mut self.board{
-
+                
             }
             return true;
         }
