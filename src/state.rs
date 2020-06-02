@@ -40,6 +40,13 @@ pub mod state{
             }
 
         }
+
+        pub fn place(&mut self, x:i8, y:i8)->bool{
+            
+
+            return true;
+        }
+
     }
 
 
