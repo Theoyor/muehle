@@ -69,7 +69,6 @@ pub mod base{
 
                 }
             }
-            return true;
         }
 
         pub fn spot_muehle(&self,fd:(i8,i8,i8))->bool{
