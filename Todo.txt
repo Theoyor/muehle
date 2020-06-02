@@ -1,8 +1,14 @@
 ggez:
-	Input
+	Input:
+		auf Mausklicks reagieren
+		aufrufen von Zügen
 	Graphik
+	Erkennen des States:
+		Ausgeben, wenn gewonnen
+		Ausgeben ob jetzt gesetzt, gezogen, gesprungen oder geschlagen werden darf
 
+	
 Spiel:
 	Überprüfen
-	Ziehen: Move, place, remove
+	Züge: Move, place, remove
 	
