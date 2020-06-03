@@ -99,7 +99,8 @@ pub mod base{
         pub fn spot_muehle(&self,fd:(i8,i8,i8))->bool{
             let mut x_counter:i8= 0;
             let mut y_counter:i8= 0;
-            //* Zählt die Felder mit den gleichen x oder y Koordinaten und dem selben Spieler. Wenn der Counter 3 ist ist der Stein Teil einer Mühle.
+            //* Zählt die Felder mit den gleichen x oder y Koordinaten und dem selben Spieler. 
+            //* Wenn der Counter 3 ist ist der Stein Teil einer Mühle.
             for field in &self.board {
                 if field.2 == fd.2 {
                     if field.0 == fd.0 {
