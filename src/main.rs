@@ -14,5 +14,4 @@ fn main() {
     let fd = fd.change(4, 7, 1).unwrap();
     fd.printm();
     println!("{}",fd.spot_muehle((4,1,1)));
-    //screen::start();
 }
