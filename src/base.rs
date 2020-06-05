@@ -193,16 +193,14 @@ pub mod base{
             // wenn im Jumpmode true sonst false
             if self.turn == 1  {
                 match self.p1_mode {
-                    PlayMode::Place => return false,
-                    PlayMode::Move => return false,
-                    PlayMode::Jump => return true
+                    PlayMode::Jump => return true,
+                    _ => return false
                 }
             }
             if self.turn == -1 {
                 match self.p2_mode {
-                    PlayMode::Place => return false,
-                    PlayMode::Move => return false,
-                    PlayMode::Jump => return true
+                    PlayMode::Jump => return true,
+                    _ => return false
                 }
             }
             return false
@@ -210,14 +208,10 @@ pub mod base{
         }
 
         /*
-        pub fn r#move(&self, from: (i8,i8), to: (i8, i8))->Result<State, &str>{
-            
-            
+        pub fn mov(&self, from: (i8,i8,i8), to: (i8,i8,i8))->Result<State, &str>{
 
         }
-        */
-
-
+    */
     }
 
 
