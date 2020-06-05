@@ -8,6 +8,7 @@ pub mod base{
 
     #[derive(Clone)]
     pub enum PlayMode{
+        // Der bool ist true: Schlagen ist erlaubt, andernfalls nicht
         Place(bool),
         Move(bool),
         Jump(bool),
@@ -63,6 +64,7 @@ pub mod base{
             return ret;
         }
         */
+        //*evtl nicht nötig
         pub fn coords_to_field(&self, x:i8, y:i8 )->Result<(i8,i8,i8),&str>{
             for field in &self.board{
                 if field.0 == x && field.1 == y{
@@ -209,17 +211,23 @@ pub mod base{
 
     
         pub fn mov(&self, from: (i8,i8,i8), to: (i8,i8,i8))->Result<State, &str>{
+            //* Gibt wenn möglich einen State nach einem move-Zug aus 
+            //TODO testen ob gewonnen
             let mut st = self.clone();
             match self.move_control(from, to){
                 Ok(_) =>{
+                    //moven:
                     st.change( (from.0,from.1, 0) );
                     st.change( (to.0,to.1,st.turn) );
+                    
+                    //falls Mühle entstanden ist den Zug behalten und in schlagenden Zustand gehen
                     if st.spot_muehle((to.0,to.1,st.turn)){
                         if st.turn == 1{
                             st.p1_mode = PlayMode::Move(true);
-                        }else{
+                        }else{   
                             st.p2_mode = PlayMode::Move(true);
                         }
+                    //Andernfalls Zug wechseln und Zustand beibehalten
                     }else{
                         st.turn *= -1;
                     }
@@ -231,19 +239,21 @@ pub mod base{
         }
         
         pub fn remove(&self, field: (i8,i8,i8))->Result<State, &str>{
+            //* Gibt wenn möglich einen State nacheinem remove-Zug aus
             let mut st = self.clone();
-            //let is_p1 = st.turn == 1;
             match self.remove_control(field){
                 Ok(_)=>{
+                    //removen
                     st.change((field.0,field.1, 0));
                     if st.turn == 1{
                         match &mut st.p1_mode {
+                            //Zustand wieder auf nicht-schlagen setzen
                             PlayMode::Jump(true) => st.p1_mode = PlayMode::Jump(false),
                             PlayMode::Place(true) => st.p1_mode = PlayMode::Place(false),
                             PlayMode::Move(true) => st.p1_mode = PlayMode::Move(false), 
                             _ => return Err("Das sollte unmöglich sein, remove")
                         } 
-
+                        //Schauen ob p2 in einen anderen Zustand wechseln muss
                         st.p2_stones -= 1;
                         if st.p2_stones == 3{
                             st.p2_mode = PlayMode::Jump(false);
@@ -253,12 +263,13 @@ pub mod base{
                     }
                     if st.turn == -1{
                         match &mut st.p2_mode {
+                            //Zustand auf nicht-schlagen setzen
                             PlayMode::Jump(true) => st.p1_mode = PlayMode::Jump(false),
                             PlayMode::Place(true) => st.p1_mode = PlayMode::Place(false),
                             PlayMode::Move(true) => st.p1_mode = PlayMode::Move(false), 
                             _ => return Err("Das sollte unmöglich sein, remove")
                         } 
-                        
+                        //schauen ob p1 in einen anderen Zustand muss
                         st.p1_stones -= 1;
                         if st.p1_stones == 3{
                             st.p1_mode = PlayMode::Jump(false);
@@ -266,6 +277,7 @@ pub mod base{
                             st.p2_mode = PlayMode::Won;
                         }
                     }
+                    // Der andere Spieler ist am Zug
                     st.turn *= -1;
 
                     return Ok(st);
@@ -276,6 +288,7 @@ pub mod base{
 
         pub fn place(&self, field:(i8,i8,i8))->Result<State,&str>{
             //! Noch Fehler vorhanden 
+            //TODO Testen ob gewonnen
             let mut st = self.clone();
             match self.place_control(field){
                 Ok(_) =>{
