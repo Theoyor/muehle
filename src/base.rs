@@ -64,6 +64,8 @@ pub mod base{
             }
             return Err("Existiert nicht")
         }
+
+
         pub fn printm(&self){
             
             for x in 1..8{
@@ -82,17 +84,14 @@ pub mod base{
                 }
                 println!{""};
             }
-
         }
 
         
         pub fn change(&self, tupel:(i8,i8,i8))->Result<State,&str>{
             //gibt Ok(State) mit verändertem State zurück oder einen String-Error
             let mut st = self.clone();
-            
             for field in &mut st.board{
                 if field.0 == tupel.0 && field.1 == tupel.1{
-
                     if field.2 == 0{
                         *field = (tupel.0, tupel.1, tupel.2);
                         return Ok(st);
@@ -147,8 +146,8 @@ pub mod base{
             } else {
                 return false
             }
-
         }
+
 
         pub fn place_control(&self, plz: (i8,i8,i8)) -> bool{
             //Supi 
@@ -159,6 +158,7 @@ pub mod base{
                 return false;
             }
         }
+
 
         pub fn remove_control(&self, rem: (i8,i8,i8)) -> bool{
             // falls rem Teil einer Mühle ist
@@ -176,6 +176,7 @@ pub mod base{
                 return true;
             }
         } 
+
 
         pub fn move_control(&self,from:(i8,i8,i8),to:(i8,i8,i8)) -> bool{
             // wenn das Feld besetzt ist
@@ -206,7 +207,6 @@ pub mod base{
                 }
             }
             return false
-
         }
 
         /*
