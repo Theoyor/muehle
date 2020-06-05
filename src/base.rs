@@ -27,6 +27,7 @@ pub mod base{
     impl State{
         pub fn new() -> State{
             //* Gibt einen State mit "leerem" board zurück. Sortiert nach Spalten.
+            //! Niemals die Reihenfolge ändern
             let mut xs: Vec<(i8,i8,i8), U24> = Vec::new();
             xs.extend_from_slice(&[(1, 1, 0), (1, 4, 0), (1, 7, 0), (2, 2, 0), (2, 4, 0), (2, 6, 0), (3, 3, 0), (3, 4, 0), (3, 5, 0), (4, 1, 0), (4, 2, 0), (4, 3, 0), (4, 5, 0), (4, 6, 0), (4, 7, 0), (5, 3, 0), (5, 4, 0), (5, 5, 0), (6, 2, 0), (6, 4, 0), (6, 6, 0), (7, 1, 0), (7, 4, 0), (7, 7, 0)]).unwrap();
 
@@ -55,7 +56,14 @@ pub mod base{
             return ret;
         }
         */
-        
+        pub fn coords_to_field(&self, x:i8, y:i8 )->Result<(i8,i8,i8),&str>{
+            for field in &self.board{
+                if field.0 == x && field.1 == y{
+                    return Ok(*field);
+                }
+            }
+            return Err("Existiert nicht")
+        }
         pub fn printm(&self){
             
             for x in 1..8{
@@ -119,6 +127,33 @@ pub mod base{
 
         }
 
+        pub fn place_control(&self, plz: (i8,i8,i8)) -> bool{
+            //Supi 
+            if plz.2 == 0{
+                return true;
+            //falls das Feld besetzt ist 
+            }else {
+                return false;
+            }
+        }
+
+        pub fn remove_control(&self, rem: (i8,i8,i8)) -> bool{
+            // falls rem Teil einer Mühle ist
+            if self.spot_muehle(rem){
+                return false;
+            }
+            //falls das Feld leer ist 
+            if rem.2 == 0{
+                return false;
+            //falls versucht wird den gleichen zu schlagen 
+            }else if rem.2 == self.turn{
+                return false;
+            //passt
+            }else{
+                return true;
+            }
+        } 
+
         pub fn move_control(&self,from:(i8,i8,i8),to:(i8,i8,i8)) -> bool{
             // wenn das Feld besetzt ist
             if to.2 != 0 {
@@ -151,6 +186,13 @@ pub mod base{
             }
         }
 
+        /*
+        pub fn r#move(&self, from: (i8,i8), to: (i8, i8))->Result<State, &str>{
+            
+            
+
+        }
+        */
 
 
     }
