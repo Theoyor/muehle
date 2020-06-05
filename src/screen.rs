@@ -38,7 +38,28 @@ impl event::EventHandler for MainState {
         )?;
         graphics::draw(ctx, &rect1, (na::Point2::new(0.0, 0.0),))?;
 
+        //mittlerer Ring:
+        let rectsize2 = graphics::Rect::new(175.0, 175.0, 250.0, 250.0);
+        let rect2 = graphics::Mesh::new_rectangle(
+            ctx, 
+            graphics::DrawMode::stroke(3.0), 
+            rectsize2, 
+            graphics::BLACK
+        )?;
+        graphics::draw(ctx, &rect2, (na::Point2::new(0.0, 0.0),))?;
+
+
+        //innerer Ring:
+        let rectsize2 = graphics::Rect::new(250.0, 250.0, 100.0, 100.0);
+        let rect2 = graphics::Mesh::new_rectangle(
+            ctx, 
+            graphics::DrawMode::stroke(4.0), 
+            rectsize2, 
+            graphics::BLACK
+        )?;
+        graphics::draw(ctx, &rect2, (na::Point2::new(0.0, 0.0),))?;
         
+
         graphics::present(ctx)?;
         Ok(())
     }
