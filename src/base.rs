@@ -146,9 +146,9 @@ pub mod base{
                     PlayMode::Move => return false,
                     PlayMode::Jump => return true
                 }
-            } else {
-                return false
             }
+            return false
+
         }
 
 
