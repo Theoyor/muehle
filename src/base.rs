@@ -103,11 +103,30 @@ pub mod base{
             //* Wenn der Counter 3 ist ist der Stein Teil einer Mühle.
             for field in &self.board {
                 if field.2 == fd.2 {
-                    if field.0 == fd.0 {
-                        x_counter += 1;
+                    if fd.0 == 4 {
+                        if field.1 == fd.1 {
+                            y_counter += 1;
+                        }
+                        //println!("1 {}",((field.1 - fd.1).abs() < 2));
+                        if field.0 == fd.0 && (field.1 - fd.1).abs() < 2 {
+                            x_counter += 1;
+                        }
                     }
-                    if field.1 == fd.1 {
-                        y_counter += 1;
+                    else if fd.1 == 4 {
+                        if field.0 == fd.0 {
+                            x_counter += 1;
+                        }
+                        if field.1 == fd.1 && (field.0 - fd.0).abs() < 2 {
+                            y_counter += 1;
+                        }
+                    }
+                    else {
+                        if field.0 == fd.0 {
+                            x_counter += 1;
+                        }
+                        if field.1 == fd.1 {
+                            y_counter += 1;
+                        }
                     }
                 }
             }
@@ -118,6 +137,7 @@ pub mod base{
             }
 
         }
+
 
         pub fn move_control(&self,from:(i8,i8,i8),to:(i8,i8,i8)) -> bool{
             // wenn das Feld besetzt ist
