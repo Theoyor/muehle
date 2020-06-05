@@ -1,17 +1,22 @@
 use ggez;
-use ggez::event;
+use ggez::{Context};
+use ggez::event::{self, MouseButton};
 use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::conf;
 
 
 struct MainState {
+    mouse_down: bool,
     pos_x: f32,
 }
 
 impl MainState {
     fn new() -> ggez::GameResult<MainState> {
-        let s = MainState { pos_x: 0.0 };
+        let s = MainState {
+            mouse_down: false,
+            pos_x: 0.0
+        };
         Ok(s)
     }
 }
@@ -63,6 +68,17 @@ impl event::EventHandler for MainState {
         graphics::present(ctx)?;
         Ok(())
     }
+
+    fn mouse_button_down_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
+        self.mouse_down = true;
+        println!("Mouse button pressed: {:?}, x: {}, y: {}", button, x, y);
+    }
+
+    fn mouse_button_up_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
+        self.mouse_down = false;
+        println!("Mouse button released: {:?}, x: {}, y: {}", button, x, y);
+    }
+
 }
 
 
