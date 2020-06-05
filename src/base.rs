@@ -8,9 +8,11 @@ pub mod base{
 
     #[derive(Clone)]
     pub enum PlayMode{
-        Place,
-        Move,
-        Jump,
+        Place(bool),
+        Move(bool),
+        Jump(bool),
+        Won,
+        Lost,
     }
 
     #[derive(Clone)]
@@ -21,6 +23,8 @@ pub mod base{
         pub board: Vec<(i8,i8,i8), U24>,
         pub p1_mode: PlayMode,
         pub p2_mode: PlayMode,
+        pub p1_stones: u8,
+        pub p2_stones: u8,
         pub turn: i8,
     }
 
@@ -33,11 +37,12 @@ pub mod base{
             let mut xs: Vec<(i8,i8,i8), U24> = Vec::new();
             xs.extend_from_slice(&[(1, 1, 0), (1, 4, 0), (1, 7, 0), (2, 2, 0), (2, 4, 0), (2, 6, 0), (3, 3, 0), (3, 4, 0), (3, 5, 0), (4, 1, 0), (4, 2, 0), (4, 3, 0), (4, 5, 0), (4, 6, 0), (4, 7, 0), (5, 3, 0), (5, 4, 0), (5, 5, 0), (6, 2, 0), (6, 4, 0), (6, 6, 0), (7, 1, 0), (7, 4, 0), (7, 7, 0)]).unwrap();
 
-
             State{
                 board: xs,
-                p1_mode: PlayMode::Place,
-                p2_mode: PlayMode::Place,
+                p1_mode: PlayMode::Place(false),
+                p2_mode: PlayMode::Place(false),
+                p1_stones: 9,
+                p2_stones: 9,
                 turn: 1, //TODO evtl. Seiten auswaehlen
             }
         }
@@ -66,7 +71,7 @@ pub mod base{
             }
             return Err("Existiert nicht")
         }
-
+        
 
         pub fn printm(&self){
             
@@ -179,13 +184,13 @@ pub mod base{
             // wenn im Jumpmode true sonst false
             if self.turn == 1  {
                 match self.p1_mode {
-                    PlayMode::Jump => return Ok(true),
+                    PlayMode::Jump(b) => return Ok(true),
                     _ => return Err("Das Feld ist zuweit weg")
                 }
             }
             if self.turn == -1 {
                 match self.p2_mode {
-                    PlayMode::Jump => return Ok(true),
+                    PlayMode::Jump(b) => return Ok(true),
                     _ => return Err("Das Feld ist zuweit weg")
                 }
             }
@@ -193,23 +198,102 @@ pub mod base{
         }
 
 
-        pub fn change(&self, tupel:(i8,i8,i8))->State{
+        pub fn change(&mut self, tupel:(i8,i8,i8)){
             //gibt Ok(State) mit verändertem State zurück oder einen String-Error
-            let mut st = self.clone();
-            for field in &mut st.board{
+            for field in &mut self.board{
                 if field.0 == tupel.0 && field.1 == tupel.1{                
                     *field = (tupel.0, tupel.1, tupel.2);
-                    return st;
                 }
             }
-            return st;
         }
 
-        /*
+    
         pub fn mov(&self, from: (i8,i8,i8), to: (i8,i8,i8))->Result<State, &str>{
-
+            let mut st = self.clone();
+            match self.move_control(from, to){
+                Ok(_) =>{
+                    st.change( (from.0,from.1, 0) );
+                    st.change( (to.0,to.1,st.turn) );
+                    if st.spot_muehle((to.0,to.1,st.turn)){
+                        if st.turn == 1{
+                            st.p1_mode = PlayMode::Move(true);
+                        }else{
+                            st.p2_mode = PlayMode::Move(true);
+                        }
+                    }else{
+                        st.turn *= -1;
+                    }
+                    return Ok(st);
+                },
+                Err(msg) => return Err(msg)
+            }
+            
         }
-    */
+        
+        pub fn remove(&self, field: (i8,i8,i8))->Result<State, &str>{
+            let mut st = self.clone();
+            //let is_p1 = st.turn == 1;
+            match self.remove_control(field){
+                Ok(_)=>{
+                    st.change((field.0,field.1, 0));
+                    if st.turn == 1{
+                        match &mut st.p1_mode {
+                            PlayMode::Jump(true) => st.p1_mode = PlayMode::Jump(false),
+                            PlayMode::Place(true) => st.p1_mode = PlayMode::Place(false),
+                            PlayMode::Move(true) => st.p1_mode = PlayMode::Move(false), 
+                            _ => return Err("Das sollte unmöglich sein, remove")
+                        } 
+
+                        st.p2_stones -= 1;
+                        if st.p2_stones == 3{
+                            st.p2_mode = PlayMode::Jump(false);
+                        }else if st.p2_stones < 3{
+                            st.p1_mode = PlayMode::Won;
+                        }
+                    }
+                    if st.turn == -1{
+                        match &mut st.p2_mode {
+                            PlayMode::Jump(true) => st.p1_mode = PlayMode::Jump(false),
+                            PlayMode::Place(true) => st.p1_mode = PlayMode::Place(false),
+                            PlayMode::Move(true) => st.p1_mode = PlayMode::Move(false), 
+                            _ => return Err("Das sollte unmöglich sein, remove")
+                        } 
+                        
+                        st.p1_stones -= 1;
+                        if st.p1_stones == 3{
+                            st.p1_mode = PlayMode::Jump(false);
+                        }else if st.p1_stones < 3{
+                            st.p2_mode = PlayMode::Won;
+                        }
+                    }
+                    st.turn *= -1;
+
+                    return Ok(st);
+                },
+                Err(msg) => return Err(msg)
+            }
+        }
+
+        pub fn place(&self, field:(i8,i8,i8))->Result<State,&str>{
+            //! Noch Fehler vorhanden 
+            let mut st = self.clone();
+            match self.place_control(field){
+                Ok(_) =>{
+                    st.change( (field.0,field.1,st.turn) );
+                    if st.spot_muehle((field.0,field.1,st.turn)){
+                        if st.turn == 1{
+                            st.p1_mode = PlayMode::Move(true); //fehler 
+                        }else{
+                            st.p2_mode = PlayMode::Move(true); //fehler
+                        }
+                    }else{
+                        st.turn *= -1;
+                    }
+                    return Ok(st);
+                },
+                Err(msg) => return Err(msg)
+            }
+        }
     }
 
 
