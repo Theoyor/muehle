@@ -96,18 +96,41 @@ pub mod base{
             Err("Feld existiert nicht")
         }
 
+
         pub fn spot_muehle(&self,fd:(i8,i8,i8))->bool{
             let mut x_counter:i8= 0;
             let mut y_counter:i8= 0;
             //* Zählt die Felder mit den gleichen x oder y Koordinaten und dem selben Spieler. 
             //* Wenn der Counter 3 ist ist der Stein Teil einer Mühle.
             for field in &self.board {
+                // Felder mit selbem Stein besetzt
                 if field.2 == fd.2 {
-                    if field.0 == fd.0 {
-                        x_counter += 1;
+                    // x Koordinate == 4 ist ein Sonderfall
+                    if fd.0 == 4 {
+                        if field.1 == fd.1 {
+                            y_counter += 1;
+                        }
+                        if field.0 == fd.0 && (field.1 - fd.1).abs() < 3 {
+                            x_counter += 1;
+                        }
                     }
-                    if field.1 == fd.1 {
-                        y_counter += 1;
+                    // y Koordinate == 4 ist ein Sonderfall
+                    else if fd.1 == 4 {
+                        if field.0 == fd.0 {
+                            x_counter += 1;
+                        }
+                        if field.1 == fd.1 && (field.0 - fd.0).abs() < 3 {
+                            y_counter += 1;
+                        }
+                    }
+                        // wenn es kein Sonderfall ist
+                    else {
+                        if field.0 == fd.0 {
+                            x_counter += 1;
+                        }
+                        if field.1 == fd.1 {
+                            y_counter += 1;
+                        }
                     }
                 }
             }
@@ -118,6 +141,7 @@ pub mod base{
             }
 
         }
+
 
         pub fn move_control(&self,from:(i8,i8,i8),to:(i8,i8,i8)) -> bool{
             // wenn das Feld besetzt ist
@@ -146,9 +170,9 @@ pub mod base{
                     PlayMode::Move => return false,
                     PlayMode::Jump => return true
                 }
-            } else {
-                return false
             }
+            return false
+
         }
 
 
