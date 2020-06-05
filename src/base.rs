@@ -134,62 +134,62 @@ pub mod base{
         }
 
 
-        pub fn place_control(&self, plz: (i8,i8,i8)) -> bool{
+        pub fn place_control(&self, plz: (i8,i8,i8)) ->Result<bool,&str>{
             //Supi 
             if plz.2 == 0{
-                return true;
+                return Ok(true);
             //falls das Feld besetzt ist 
             }else {
-                return false;
+                return Err("Feld ist besetzt");
             }
         }
 
 
-        pub fn remove_control(&self, rem: (i8,i8,i8)) -> bool{
+        pub fn remove_control(&self, rem: (i8,i8,i8)) ->Result<bool,&str>{
             // falls rem Teil einer Mühle ist
             if self.spot_muehle(rem){
-                return false;
+                return Err("Stein ist Teil einer Mühle");
             }
             //falls das Feld leer ist 
             if rem.2 == 0{
-                return false;
+                return Err("Feld ist leer");
             //falls versucht wird den gleichen zu schlagen 
             }else if rem.2 == self.turn{
-                return false;
+                return Err("Willst du wirklich deienen eigenen Stein schlagen? Du Horst");
             //passt
             }else{
-                return true;
+                return Ok(true);
             }
         } 
 
 
-        pub fn move_control(&self,from:(i8,i8,i8),to:(i8,i8,i8)) -> bool{
+        pub fn move_control(&self,from:(i8,i8,i8),to:(i8,i8,i8)) ->Result<bool,&str>{
             // wenn das Feld besetzt ist
             if to.2 != 0 {
-                return false
+                return Err("Feld ist besetzt");
             }
             // wenn ein falscher Stein bewegt werden soll
             if self.turn != from.2 {
-                return false
+                return Err("Das ist nicht dein Stein !!!");
             }
             // wenn das Zielfeld das Ursprungsfeld berührt
             if from.0 == to.0 || from.1 == to.1 {
-                return true
+                return Ok(true);
             }
             // wenn im Jumpmode true sonst false
             if self.turn == 1  {
                 match self.p1_mode {
-                    PlayMode::Jump => return true,
-                    _ => return false
+                    PlayMode::Jump => return Ok(true),
+                    _ => return Err("Das Feld ist zuweit weg")
                 }
             }
             if self.turn == -1 {
                 match self.p2_mode {
-                    PlayMode::Jump => return true,
-                    _ => return false
+                    PlayMode::Jump => return Ok(true),
+                    _ => return Err("Das Feld ist zuweit weg")
                 }
             }
-            return false
+            return Err("Unbekannt move_control")
         }
 
 
