@@ -86,15 +86,15 @@ pub mod base{
         }
 
         
-        pub fn change(&self, x:i8, y:i8, player:i8)->Result<State,&str>{
+        pub fn change(&self, tupel:(i8,i8,i8))->Result<State,&str>{
             //gibt Ok(State) mit verändertem State zurück oder einen String-Error
             let mut st = self.clone();
             
             for field in &mut st.board{
-                if field.0 == x && field.1 == y{
+                if field.0 == tupel.0 && field.1 == tupel.1{
 
                     if field.2 == 0{
-                        *field = (x,y,player);
+                        *field = (tupel.0, tupel.1, tupel.2);
                         return Ok(st);
                     }else{
                         return Err("Feld ist besetzt");
