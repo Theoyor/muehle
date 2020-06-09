@@ -214,8 +214,17 @@ pub mod base{
         }
 
         pub fn place_control(&self, plz: (i8,i8,i8)) ->Result<bool,&str>{
+            let mut fld: (i8,i8,i8) = (0,0,0);
+            for field in &self.board{
+                if field.0 == plz.0 && field.1 == plz.1{
+                    fld = *field;
+                }
+            }
+            if fld == (0,0,0){
+                return Err("Feld existert nicht")
+            }
             //Supi 
-            if plz.2 == 0{
+            if fld.2 == 0{
                 return Ok(true);
             //falls das Feld besetzt ist 
             }else {
@@ -225,15 +234,24 @@ pub mod base{
 
 
         pub fn remove_control(&self, rem: (i8,i8,i8)) ->Result<bool,&str>{
+            let mut fld: (i8,i8,i8) = (0,0,0);
+            for field in &self.board{
+                if field.0 == rem.0 && field.1 == rem.1{
+                    fld = *field;
+                }
+            }
+            if fld == (0,0,0){
+                return Err("Feld existert nicht")
+            }
             // falls rem Teil einer Mühle ist
-            if self.spot_muehle(rem){
+            if self.spot_muehle(fld){
                 return Err("Stein ist Teil einer Mühle");
             }
             //falls das Feld leer ist 
-            if rem.2 == 0{
+            if fld.2 == 0{
                 return Err("Feld ist leer");
             //falls versucht wird den gleichen zu schlagen 
-            }else if rem.2 == self.turn{
+            }else if fld.2 == self.turn{
                 return Err("Willst du wirklich deienen eigenen Stein schlagen? Du Horst");
             //passt
             }else{
@@ -243,32 +261,50 @@ pub mod base{
 
 
         pub fn move_control(&self,from:(i8,i8,i8),to:(i8,i8,i8)) ->Result<bool,&str>{
+            let mut fldf: (i8,i8,i8) = (0,0,0);
+            let mut fldt: (i8,i8,i8) = (0,0,0);
+            for field in &self.board{
+                if field.0 == from.0 && field.1 == from.1{
+                    fldf = *field;
+                }
+                if field.0 == to.0 && field.1 == to.1{
+                    fldt = *field;
+                }
+            }
+            if fldf == (0,0,0) || fldt == (0,0,0){
+                return Err("Ein Feld existert nicht")
+            }
             // wenn das Feld besetzt ist
-            if to.2 != 0 {
+            if fldt.2 != 0 {
                 return Err("Feld ist besetzt");
             }
             // wenn ein falscher Stein bewegt werden soll
-            if self.turn != from.2 {
-                return Err("Das ist nicht dein Stein !!!");
+            if self.turn != fldf.2 {
+                return Err("Das ist nicht dein Stein/Das Feld ist leer!!!");
+            }
+            // Wenn der Stein nicht bewegt wird
+            if fldf.0 == fldt.0 && fldf.1 == fldt.1{
+                return Err("Du musst den Stein schon bewegen")
             }
             // wenn das Zielfeld das Ursprungsfeld berührt
-            if from.0 == to.0 || from.1 == to.1 {
+            else if fldf.0 == fldt.0 || fldf.1 == fldt.1 {
                 return Ok(true);
             }
+                
             // wenn im Jumpmode true sonst false
             if self.turn == 1  {
                 match self.p1_mode {
-                    PlayMode::Jump(b) => return Ok(true),
+                    PlayMode::Jump(_) => return Ok(true),
                     _ => return Err("Das Feld ist zuweit weg")
                 }
             }
             if self.turn == -1 {
                 match self.p2_mode {
-                    PlayMode::Jump(b) => return Ok(true),
+                    PlayMode::Jump(_) => return Ok(true),
                     _ => return Err("Das Feld ist zuweit weg")
                 }
             }
-            return Err("Unbekannt move_control")
+            return Err("Unbekannt move_control");
         }
 
 
