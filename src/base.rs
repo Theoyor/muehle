@@ -202,8 +202,8 @@ pub mod base{
         }
 
         //
-        pub fn spot_pot_muehle(&self, field: (i8,i8,i8)) -> u8{
-            let mut ret = 0;
+        pub fn spot_pot_muehle(&self, field: (i8,i8,i8)) -> i8{
+            let mut ret  = 0;
             let neighbors = self.get_neighbor(field);
             if field.2 == 0{
                 let mut neighbor_count = 0;
@@ -268,7 +268,7 @@ pub mod base{
             return ret;
         }
 
-        pub fn movable(&self, player: i8) -> u8{
+        pub fn movable(&self, player: i8) -> i8{
             let mut ret = 0;
             for field in &self.board{
                 if field.2 != player{
@@ -278,6 +278,7 @@ pub mod base{
                 for n in neighbors{
                     if n.2 == 0{
                         ret += 1;
+                        break;
                     }
                 }
             }
@@ -493,6 +494,40 @@ pub mod base{
             }
         }
 
+
+        pub fn spielstandbewertung(&self)->i8 {
+            let x = self.movable(1)-self.movable(-1);
+
+            let mut y: i8 = 0;
+            y += self.spot_muehle(self.board[0])*self.board[0].2;
+            y += self.spot_muehle(self.board[3])*self.board[3].2;
+            y += self.spot_muehle(self.board[6])*self.board[6].2;
+            y += self.spot_muehle(self.board[17])*self.board[17].2;
+            y += self.spot_muehle(self.board[20])*self.board[20].2;
+            y += self.spot_muehle(self.board[23])*self.board[23].2;
+            y += self.spot_muehle(self.board[4])*self.board[4].2;
+            y += self.spot_muehle(self.board[10])*self.board[10].2;
+            y += self.spot_muehle(self.board[13])*self.board[13].2;
+            y += self.spot_muehle(self.board[19])*self.board[19].2;
+
+            let mut z: i8 = 0;
+            z += self.spot_pot_muehle(self.board[1])*self.board[1].2;
+            z += self.spot_pot_muehle(self.board[4])*self.board[4].2;
+            z += self.spot_pot_muehle(self.board[7])*self.board[7].2;
+            z += self.spot_pot_muehle(self.board[16])*self.board[16].2;
+            z += self.spot_pot_muehle(self.board[19])*self.board[19].2;
+            z += self.spot_pot_muehle(self.board[22])*self.board[22].2;
+            z += self.spot_pot_muehle(self.board[9])*self.board[9].2;
+            z += self.spot_pot_muehle(self.board[10])*self.board[10].2;
+            z += self.spot_pot_muehle(self.board[11])*self.board[11].2;
+            z += self.spot_pot_muehle(self.board[12])*self.board[12].2;
+            z += self.spot_pot_muehle(self.board[13])*self.board[13].2;
+            z += self.spot_pot_muehle(self.board[14])*self.board[14].2;
+
+
+
+            return y;
+        }
 
         
     }
