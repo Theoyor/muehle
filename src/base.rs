@@ -197,6 +197,73 @@ pub mod base{
             }
         }
 
+        //
+        pub fn spot_pot_muehle(&self, field: (i8,i8,i8)) -> u8{
+            let mut ret = 0;
+            let neighbors = self.get_neighbor(field);
+            if field.2 == 0{
+                let mut neighbor_count = 0;
+                for n in neighbors{
+                    if n.0 == field.0 && n.2 == field.1{
+                        neighbor_count += 1;
+                    }
+                    if n.1 == field.1 && n.2 == field.1{
+                        neighbor_count += 1;
+                    }
+                }
+                if neighbor_count > 2{
+                    ret += 1;
+                }
+
+            }else{ 
+                let mut x = 0;
+                let mut freex = (0,0,0);
+                let mut y = 0;
+                let mut freey = (0,0,0);
+
+                for n in neighbors{
+                    if n.0 == field.0 && n.2 == field.2{
+                        x += 1;
+                        freex = n;
+                    }
+                    if n.1 == field.1 && n.2 == field.2{
+                        y += 1;
+                        freey = n; 
+                    }
+                }
+
+                if x == 1{
+                    let mut nb_count = 0;
+                    let nb = self.get_neighbor(freex);
+                    for n in nb{
+                        if n.1 == freex.1 || n.0 == freex.0 && n.2 == field.2{
+                        nb_count += 1;
+                    }
+                    }
+                    if nb_count >= 2{
+                        ret += 1;
+                    }
+                }
+                //kein else
+                if y == 1{
+                    let mut nb_count = 0;
+                    let nb = self.get_neighbor(freey);
+                    for n in nb{
+                        if n.1 == freey.1 || n.0 == freey.0 && n.2 == field.2{
+                            nb_count += 1;
+                        }
+                    }
+                    if nb_count >= 2{
+                        ret += 1;
+                    }
+
+                }
+            }
+
+
+            return ret;
+        }
+
         pub fn movable(&self, player: i8) -> u8{
             let mut ret = 0;
             for field in &self.board{
@@ -214,17 +281,11 @@ pub mod base{
         }
 
         pub fn place_control(&self, plz: (i8,i8,i8)) ->Result<bool,&str>{
-            let mut fld: (i8,i8,i8) = (0,0,0);
-            for field in &self.board{
-                if field.0 == plz.0 && field.1 == plz.1{
-                    fld = *field;
-                }
-            }
-            if fld == (0,0,0){
+            if plz == (0,0,0){
                 return Err("Feld existert nicht")
             }
             //Supi 
-            if fld.2 == 0{
+            if plz.2 == 0{
                 return Ok(true);
             //falls das Feld besetzt ist 
             }else {
@@ -234,24 +295,18 @@ pub mod base{
 
 
         pub fn remove_control(&self, rem: (i8,i8,i8)) ->Result<bool,&str>{
-            let mut fld: (i8,i8,i8) = (0,0,0);
-            for field in &self.board{
-                if field.0 == rem.0 && field.1 == rem.1{
-                    fld = *field;
-                }
-            }
-            if fld == (0,0,0){
+            if rem == (0,0,0){
                 return Err("Feld existert nicht")
             }
             // falls rem Teil einer Mühle ist
-            if self.spot_muehle(fld){
+            if self.spot_muehle(rem){
                 return Err("Stein ist Teil einer Mühle");
             }
             //falls das Feld leer ist 
-            if fld.2 == 0{
+            if rem.2 == 0{
                 return Err("Feld ist leer");
             //falls versucht wird den gleichen zu schlagen 
-            }else if fld.2 == self.turn{
+            }else if rem.2 == self.turn{
                 return Err("Willst du wirklich deienen eigenen Stein schlagen? Du Horst");
             //passt
             }else{
@@ -261,33 +316,24 @@ pub mod base{
 
 
         pub fn move_control(&self,from:(i8,i8,i8),to:(i8,i8,i8)) ->Result<bool,&str>{
-            let mut fldf: (i8,i8,i8) = (0,0,0);
-            let mut fldt: (i8,i8,i8) = (0,0,0);
-            for field in &self.board{
-                if field.0 == from.0 && field.1 == from.1{
-                    fldf = *field;
-                }
-                if field.0 == to.0 && field.1 == to.1{
-                    fldt = *field;
-                }
-            }
-            if fldf == (0,0,0) || fldt == (0,0,0){
+            
+            if from == (0,0,0) || to == (0,0,0){
                 return Err("Ein Feld existert nicht")
             }
             // wenn das Feld besetzt ist
-            if fldt.2 != 0 {
+            if from.2 != 0 {
                 return Err("Feld ist besetzt");
             }
             // wenn ein falscher Stein bewegt werden soll
-            if self.turn != fldf.2 {
+            if self.turn != from.2 {
                 return Err("Das ist nicht dein Stein/Das Feld ist leer!!!");
             }
             // Wenn der Stein nicht bewegt wird
-            if fldf.0 == fldt.0 && fldf.1 == fldt.1{
+            if from.0 == to.0 && from.1 == to.1{
                 return Err("Du musst den Stein schon bewegen")
             }
             // wenn das Zielfeld das Ursprungsfeld berührt
-            else if fldf.0 == fldt.0 || fldf.1 == fldt.1 {
+            else if from.0 == to.0 || from.1 == to.1 {
                 return Ok(true);
             }
                 
@@ -317,7 +363,7 @@ pub mod base{
             }
         }
 
-    
+        // Die angegegbenen Felder sind so, wie sie im Array stehen
         pub fn mov(&self, from: (i8,i8,i8), to: (i8,i8,i8))->Result<State, &str>{
             //* Gibt wenn möglich einen State nach einem move-Zug aus 
             //TODO testen ob gewonnen
@@ -345,7 +391,7 @@ pub mod base{
             }
             
         }
-        
+        //Bekommt das zu verändernde Feld angegeben
         pub fn remove(&self, field: (i8,i8,i8))->Result<State, &str>{
             //* Gibt wenn möglich einen State nacheinem remove-Zug aus
             let mut st = self.clone();
@@ -395,7 +441,7 @@ pub mod base{
                 Err(msg) => return Err(msg)
             }
         }
-
+        //Bekommt das zu verändernde Feld eingegeben
         pub fn place(&self, field:(i8,i8,i8))->Result<State,&str>{ 
             //TODO Testen ob gewonnen
             let mut st = self.clone();
