@@ -400,6 +400,7 @@ pub mod base{
             }
         }
 
+
         pub fn place(&self, field:(i8,i8,i8))->Result<State,&str>{ 
             //TODO Testen ob gewonnen
             let mut st = self.clone();
