@@ -339,9 +339,13 @@ pub mod base{
                 _ => {}
             }
             return xs;
-
-
         }
+
+
+        pub fn spielstandbewertung(&self)->i32{
+            return 0;
+        }
+
     }
 
 
