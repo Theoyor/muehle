@@ -25,7 +25,7 @@ impl MainState {
 
 impl event::EventHandler for MainState {
     fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
-        //self.pos_x = self.pos_x % 800.0 + 1.0;
+
         Ok(())
     }
 
@@ -102,7 +102,26 @@ impl event::EventHandler for MainState {
         )?;
         graphics::draw(ctx, &line4, (na::Point2::new(0.0, 0.0),))?;
         
+        
+        //Rahmen: 
 
+        let rahmensize = graphics::Rect::new(75.0, 75.0, 450.0, 450.0);
+        let rahmen = graphics::Mesh::new_rectangle(
+            ctx, 
+            graphics::DrawMode::stroke(2.0), 
+            rahmensize, 
+            graphics::BLACK
+        )?;
+        graphics::draw(ctx, &rahmen, (na::Point2::new(0.0, 0.0),))?;
+
+        let rahmensize2 = graphics::Rect::new(70.0, 70.0, 460.0, 460.0);
+        let rahmen2 = graphics::Mesh::new_rectangle(
+            ctx, 
+            graphics::DrawMode::stroke(6.0), 
+            rahmensize2, 
+            graphics::BLACK
+        )?;
+        graphics::draw(ctx, &rahmen2, (na::Point2::new(0.0, 0.0),))?;
         
 
         graphics::present(ctx)?;
