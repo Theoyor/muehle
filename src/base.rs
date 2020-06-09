@@ -303,7 +303,7 @@ pub mod base{
                 return Err("Feld existert nicht")
             }
             // falls rem Teil einer Mühle ist
-            if self.spot_muehle(rem){
+            if self.spot_muehle(rem)> 0{
                 return Err("Stein ist Teil einer Mühle");
             }
             //falls das Feld leer ist 
