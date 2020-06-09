@@ -37,7 +37,7 @@ impl event::EventHandler for MainState {
         let rectsize1 = graphics::Rect::new(100.0, 100.0, 400.0, 400.0);
         let rect1 = graphics::Mesh::new_rectangle(
             ctx, 
-            graphics::DrawMode::stroke(2.0), 
+            graphics::DrawMode::stroke(3.0), 
             rectsize1, 
             graphics::BLACK
         )?;
@@ -58,11 +58,17 @@ impl event::EventHandler for MainState {
         let rectsize2 = graphics::Rect::new(250.0, 250.0, 100.0, 100.0);
         let rect2 = graphics::Mesh::new_rectangle(
             ctx, 
-            graphics::DrawMode::stroke(4.0), 
+            graphics::DrawMode::stroke(3.0), 
             rectsize2, 
             graphics::BLACK
         )?;
         graphics::draw(ctx, &rect2, (na::Point2::new(0.0, 0.0),))?;
+        
+        //Verbindungslinien:
+        
+        //let line1= graphics::Mesh::new_line(ctx, &[na::Point2::new(10.0, 10.0), na::Point2::new(10.0, 20.0)], 3.0, graphics::BLACK);
+        
+        //graphics::draw(ctx, &line1, (na::Point2::new(0.0,0.0),))?;
         
 
         graphics::present(ctx)?;
@@ -86,7 +92,7 @@ impl event::EventHandler for MainState {
 pub fn start() -> ggez::GameResult { 
     let cb = ggez::ContextBuilder::new("Muehle", "Rust-Atzen")
         .window_setup(conf::WindowSetup::default().title("Muehle"))
-        .window_mode(conf::WindowMode::default().dimensions(700.0, 600.0));
+        .window_mode(conf::WindowMode::default().dimensions(800.0, 600.0));
     
     let (ctx, event_loop) = &mut cb.build()?;
     let state = &mut MainState::new()?;
