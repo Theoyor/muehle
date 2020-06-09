@@ -5,10 +5,14 @@ use screen::start;
 
 fn main() {
     println!("Hello, world!");
-    let fd = State::new();
+    let mut fd = State::new();
 
-    println!("{}",fd.spot_muehle((1,1,1)));
-    print!("{:?}", fd);
-    println!("{}",fd.spot_muehle((4,1,1)));
-    screen::start();
+    fd = fd.place((1,1,1)).unwrap();
+    fd = fd.place((1,4,-1)).unwrap();
+    fd = fd.place((4,1,1)).unwrap();
+    fd = fd.place((2,2,-1)).unwrap();
+    fd = fd.place((7,1,1)).unwrap();
+    fd = fd.remove((1,4,0)).unwrap();
+    println!("{:?}", fd);
+    //screen::start();
 }
