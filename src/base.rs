@@ -1,15 +1,18 @@
 
 
 pub mod base{
+    use std::convert::TryInto;
+    use std::fmt;
+    use std::char;
     use heapless::Vec;
     use heapless::consts::U24;
     
 
 
-    #[derive(Clone)]
+    #[derive(Clone, Debug)]
     pub enum PlayMode{
         // Der bool ist true: Schlagen ist erlaubt, andernfalls nicht
-        Place(bool),
+        Place(bool,u8),
         Move(bool),
         Jump(bool),
         Won,
@@ -29,6 +32,21 @@ pub mod base{
         pub turn: i8,
     }
 
+    impl fmt::Debug for State {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            println!("{}", &self.printm());
+            f.debug_struct("State")
+             .field("p1_mode", &self.p1_mode)
+             .field("p2_mode", &self.p2_mode)
+             .field("p1_stones", &self.p1_stones)
+             .field("p1_stones", &self.p1_stones)
+             .field("p1_turn", &self.turn)
+             .finish()
+        }
+    }
+    
+
+
     impl State{
 
 
@@ -40,8 +58,8 @@ pub mod base{
 
             State{
                 board: xs,
-                p1_mode: PlayMode::Place(false),
-                p2_mode: PlayMode::Place(false),
+                p1_mode: PlayMode::Place(false, 0),
+                p2_mode: PlayMode::Place(false, 0),
                 p1_stones: 9,
                 p2_stones: 9,
                 turn: 1, //TODO evtl. Seiten auswaehlen
@@ -75,26 +93,65 @@ pub mod base{
         }
         
 
-        pub fn printm(&self){
-            
+        pub fn printm(&self)-> String{
+            let mut board = String::new();
             for x in 1..8{
                 for y in 1..8 {
                     let mut cont = false;
                     for field in &self.board{
                         if field.0 == y && field.1 ==x{
-                            print!("{}", field.2);
+                            board.push_str(&field.2.to_string());
+                            
+                         //   print!("{}", field.2);
                             cont = true;
                             break;
                         }
                     }
                     if !cont{
-                        print!(" ")
+                        board.push(' ');
+                    //    print!(" ")
                     }
                 }
-                println!{""};
+                board.push('\n');
+                //println!{""};
             }
+            //println!("{}", board);
+            return board;
         }
 
+        pub fn get_neighbor(&self, fd:(i8,i8,i8))->Vec<(i8,i8,i8), U24>{
+            let mut xs: Vec<(i8,i8,i8), U24> = Vec::new();
+            match fd {
+                (1,1,_) => {xs.extend_from_slice(&[self.board[1],self.board[9]]).unwrap();},
+                (1,4,_) => {xs.extend_from_slice(&[self.board[0],self.board[2],self.board[4]]).unwrap();},
+                (1,7,_) => {xs.extend_from_slice(&[self.board[1],self.board[14]]).unwrap();},
+                (2,2,_) => {xs.extend_from_slice(&[self.board[4],self.board[10]]).unwrap();},
+                (2,4,_) => {xs.extend_from_slice(&[self.board[1],self.board[3],self.board[5],self.board[7]]).unwrap();},
+                (2,6,_) => {xs.extend_from_slice(&[self.board[4],self.board[13]]).unwrap();},
+                (3,3,_) => {xs.extend_from_slice(&[self.board[11],self.board[7]]).unwrap();},
+                (3,4,_) => {xs.extend_from_slice(&[self.board[4],self.board[6],self.board[8]]).unwrap();},
+                (3,5,_) => {xs.extend_from_slice(&[self.board[7],self.board[12]]).unwrap();},
+                (4,1,_) => {xs.extend_from_slice(&[self.board[0],self.board[10],self.board[21]]).unwrap();},
+                (4,2,_) => {xs.extend_from_slice(&[self.board[3],self.board[9],self.board[11],self.board[18]]).unwrap();},
+                (4,3,_) => {xs.extend_from_slice(&[self.board[6],self.board[10],self.board[15]]).unwrap();},
+                (4,5,_) => {xs.extend_from_slice(&[self.board[8],self.board[13],self.board[17]]).unwrap();},
+                (4,6,_) => {xs.extend_from_slice(&[self.board[5],self.board[12],self.board[14],self.board[20]]).unwrap();},
+                (4,7,_) => {xs.extend_from_slice(&[self.board[2],self.board[13],self.board[23]]).unwrap();},
+                (5,3,_) => {xs.extend_from_slice(&[self.board[11],self.board[16]]).unwrap();},
+                (5,4,_) => {xs.extend_from_slice(&[self.board[15],self.board[17],self.board[19]]).unwrap();},
+                (5,5,_) => {xs.extend_from_slice(&[self.board[12],self.board[16]]).unwrap();},
+                (6,2,_) => {xs.extend_from_slice(&[self.board[10],self.board[19]]).unwrap();},
+                (6,4,_) => {xs.extend_from_slice(&[self.board[16],self.board[18],self.board[20],self.board[22]]).unwrap();},
+                (6,6,_) => {xs.extend_from_slice(&[self.board[13],self.board[19]]).unwrap();},
+                (7,1,_) => {xs.extend_from_slice(&[self.board[9],self.board[22]]).unwrap();},
+                (7,4,_) => {xs.extend_from_slice(&[self.board[19],self.board[21],self.board[23]]).unwrap();},
+                (7,7,_) => {xs.extend_from_slice(&[self.board[14],self.board[22]]).unwrap();}
+                _ => {}
+            }
+            return xs;
+
+
+        }
 
         pub fn spot_muehle(&self,fd:(i8,i8,i8))->bool{
             let mut x_counter:i8= 0;
@@ -140,6 +197,21 @@ pub mod base{
             }
         }
 
+        pub fn movable(&self, player: i8) -> u8{
+            let mut ret = 0;
+            for field in &self.board{
+                if field.2 != player{
+                    continue;
+                }
+                let neighbors = self.get_neighbor(*field);
+                for n in neighbors{
+                    if n.2 == 0{
+                        ret += 1;
+                    }
+                }
+            }
+            return ret;
+        }
 
         pub fn place_control(&self, plz: (i8,i8,i8)) ->Result<bool,&str>{
             //Supi 
@@ -220,14 +292,14 @@ pub mod base{
                     st.change( (from.0,from.1, 0) );
                     st.change( (to.0,to.1,st.turn) );
                     
-                    //falls Mühle entstanden ist den Zug behalten und in schlagenden Zustand gehen
+                    //falls Mühle entstanden ist den Zug nicht beenden und in schlagenden Zustand gehen
                     if st.spot_muehle((to.0,to.1,st.turn)){
                         if st.turn == 1{
                             st.p1_mode = PlayMode::Move(true);
                         }else{   
                             st.p2_mode = PlayMode::Move(true);
                         }
-                    //Andernfalls Zug wechseln und Zustand beibehalten
+                    //Andernfalls Zug beenden und Zustand beibehalten
                     }else{
                         st.turn *= -1;
                     }
@@ -246,10 +318,11 @@ pub mod base{
                     //removen
                     st.change((field.0,field.1, 0));
                     if st.turn == 1{
-                        match &mut st.p1_mode {
+                        // Hier wird gemoved
+                        match st.p1_mode {
                             //Zustand wieder auf nicht-schlagen setzen
                             PlayMode::Jump(true) => st.p1_mode = PlayMode::Jump(false),
-                            PlayMode::Place(true) => st.p1_mode = PlayMode::Place(false),
+                            PlayMode::Place(true,n) => st.p1_mode = PlayMode::Place(false, n),
                             PlayMode::Move(true) => st.p1_mode = PlayMode::Move(false), 
                             _ => return Err("Das sollte unmöglich sein, remove")
                         } 
@@ -262,10 +335,11 @@ pub mod base{
                         }
                     }
                     if st.turn == -1{
-                        match &mut st.p2_mode {
+                        // Hier wird gemoved
+                        match st.p2_mode {
                             //Zustand auf nicht-schlagen setzen
                             PlayMode::Jump(true) => st.p1_mode = PlayMode::Jump(false),
-                            PlayMode::Place(true) => st.p1_mode = PlayMode::Place(false),
+                            PlayMode::Place(true, n) => st.p1_mode = PlayMode::Place(false, n),
                             PlayMode::Move(true) => st.p1_mode = PlayMode::Move(false), 
                             _ => return Err("Das sollte unmöglich sein, remove")
                         } 
@@ -277,7 +351,7 @@ pub mod base{
                             st.p2_mode = PlayMode::Won;
                         }
                     }
-                    // Der andere Spieler ist am Zug
+                    // Zug beenden
                     st.turn *= -1;
 
                     return Ok(st);
@@ -286,8 +360,7 @@ pub mod base{
             }
         }
 
-        pub fn place(&self, field:(i8,i8,i8))->Result<State,&str>{
-            //! Noch Fehler vorhanden 
+        pub fn place(&self, field:(i8,i8,i8))->Result<State,&str>{ 
             //TODO Testen ob gewonnen
             let mut st = self.clone();
             match self.place_control(field){
@@ -295,11 +368,37 @@ pub mod base{
                     st.change( (field.0,field.1,st.turn) );
                     if st.spot_muehle((field.0,field.1,st.turn)){
                         if st.turn == 1{
-                            st.p1_mode = PlayMode::Move(true); //fehler 
+                            // Hier wird gemoved
+                            match st.p1_mode {
+                                PlayMode::Place(false, 8) =>st.p1_mode = PlayMode::Move(true),
+                                PlayMode::Place(false, n) =>st.p1_mode = PlayMode::Place(true, n+1),
+                                _ => {}
+                            }   
                         }else{
-                            st.p2_mode = PlayMode::Move(true); //fehler
+                            // Hier wird gemoved
+                            match st.p2_mode {
+                                PlayMode::Place(false, 8) =>st.p2_mode = PlayMode::Move(true),
+                                PlayMode::Place(false, n) =>st.p2_mode = PlayMode::Place(true, n+1),
+                                _ => {}
+                            }   
                         }
                     }else{
+                        //Wen 8 Steine gesetzt worden sind, in den Move-Zustand wechseln
+                        if st.turn == 1{
+                            // Hier wird gemoved
+                            match st.p1_mode {
+                                PlayMode::Place(false, 8) => st.p1_mode = PlayMode::Move(false),
+                                _ => {}
+                            }   
+                        }else{
+                            // Hier wird gemoved
+                            match st.p2_mode {
+                                PlayMode::Place(false, 8) =>st.p2_mode = PlayMode::Move(false),
+                                _ => {}
+                            }   
+                        }
+
+                        //Zug beenden
                         st.turn *= -1;
                     }
                     return Ok(st);
@@ -309,43 +408,7 @@ pub mod base{
         }
 
 
-        pub fn get_neighbor(&self, fd:(i8,i8,i8))->Vec<(i8,i8,i8), U24>{
-            let mut xs: Vec<(i8,i8,i8), U24> = Vec::new();
-            match fd {
-                (1,1,_) => {xs.extend_from_slice(&[self.board[1],self.board[9]]).unwrap();},
-                (1,4,_) => {xs.extend_from_slice(&[self.board[0],self.board[2],self.board[4]]).unwrap();},
-                (1,7,_) => {xs.extend_from_slice(&[self.board[1],self.board[14]]).unwrap();},
-                (2,2,_) => {xs.extend_from_slice(&[self.board[4],self.board[10]]).unwrap();},
-                (2,4,_) => {xs.extend_from_slice(&[self.board[1],self.board[3],self.board[5],self.board[7]]).unwrap();},
-                (2,6,_) => {xs.extend_from_slice(&[self.board[4],self.board[13]]).unwrap();},
-                (3,3,_) => {xs.extend_from_slice(&[self.board[11],self.board[7]]).unwrap();},
-                (3,4,_) => {xs.extend_from_slice(&[self.board[4],self.board[6],self.board[8]]).unwrap();},
-                (3,5,_) => {xs.extend_from_slice(&[self.board[7],self.board[12]]).unwrap();},
-                (4,1,_) => {xs.extend_from_slice(&[self.board[0],self.board[10],self.board[21]]).unwrap();},
-                (4,2,_) => {xs.extend_from_slice(&[self.board[3],self.board[9],self.board[11],self.board[18]]).unwrap();},
-                (4,3,_) => {xs.extend_from_slice(&[self.board[6],self.board[10],self.board[15]]).unwrap();},
-                (4,5,_) => {xs.extend_from_slice(&[self.board[8],self.board[13],self.board[17]]).unwrap();},
-                (4,6,_) => {xs.extend_from_slice(&[self.board[5],self.board[12],self.board[14],self.board[20]]).unwrap();},
-                (4,7,_) => {xs.extend_from_slice(&[self.board[2],self.board[13],self.board[23]]).unwrap();},
-                (5,3,_) => {xs.extend_from_slice(&[self.board[11],self.board[16]]).unwrap();},
-                (5,4,_) => {xs.extend_from_slice(&[self.board[15],self.board[17],self.board[19]]).unwrap();},
-                (5,5,_) => {xs.extend_from_slice(&[self.board[12],self.board[16]]).unwrap();},
-                (6,2,_) => {xs.extend_from_slice(&[self.board[10],self.board[19]]).unwrap();},
-                (6,4,_) => {xs.extend_from_slice(&[self.board[16],self.board[18],self.board[20],self.board[22]]).unwrap();},
-                (6,6,_) => {xs.extend_from_slice(&[self.board[13],self.board[19]]).unwrap();},
-                (7,1,_) => {xs.extend_from_slice(&[self.board[9],self.board[22]]).unwrap();},
-                (7,4,_) => {xs.extend_from_slice(&[self.board[19],self.board[21],self.board[23]]).unwrap();},
-                (7,7,_) => {xs.extend_from_slice(&[self.board[14],self.board[22]]).unwrap();}
-                _ => {}
-            }
-            return xs;
-        }
-
-
-        pub fn spielstandbewertung(&self)->i32{
-            return 0;
-        }
-
+        
     }
 
 
