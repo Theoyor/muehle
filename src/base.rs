@@ -119,6 +119,39 @@ pub mod base{
             return board;
         }
 
+        pub fn get_neighbor(&self, fd:(i8,i8,i8))->Vec<(i8,i8,i8), U24>{
+            let mut xs: Vec<(i8,i8,i8), U24> = Vec::new();
+            match fd {
+                (1,1,_) => {xs.extend_from_slice(&[self.board[1],self.board[9]]).unwrap();},
+                (1,4,_) => {xs.extend_from_slice(&[self.board[0],self.board[2],self.board[4]]).unwrap();},
+                (1,7,_) => {xs.extend_from_slice(&[self.board[1],self.board[14]]).unwrap();},
+                (2,2,_) => {xs.extend_from_slice(&[self.board[4],self.board[10]]).unwrap();},
+                (2,4,_) => {xs.extend_from_slice(&[self.board[1],self.board[3],self.board[5],self.board[7]]).unwrap();},
+                (2,6,_) => {xs.extend_from_slice(&[self.board[4],self.board[13]]).unwrap();},
+                (3,3,_) => {xs.extend_from_slice(&[self.board[11],self.board[7]]).unwrap();},
+                (3,4,_) => {xs.extend_from_slice(&[self.board[4],self.board[6],self.board[8]]).unwrap();},
+                (3,5,_) => {xs.extend_from_slice(&[self.board[7],self.board[12]]).unwrap();},
+                (4,1,_) => {xs.extend_from_slice(&[self.board[0],self.board[10],self.board[21]]).unwrap();},
+                (4,2,_) => {xs.extend_from_slice(&[self.board[3],self.board[9],self.board[11],self.board[18]]).unwrap();},
+                (4,3,_) => {xs.extend_from_slice(&[self.board[6],self.board[10],self.board[15]]).unwrap();},
+                (4,5,_) => {xs.extend_from_slice(&[self.board[8],self.board[13],self.board[17]]).unwrap();},
+                (4,6,_) => {xs.extend_from_slice(&[self.board[5],self.board[12],self.board[14],self.board[20]]).unwrap();},
+                (4,7,_) => {xs.extend_from_slice(&[self.board[2],self.board[13],self.board[23]]).unwrap();},
+                (5,3,_) => {xs.extend_from_slice(&[self.board[11],self.board[16]]).unwrap();},
+                (5,4,_) => {xs.extend_from_slice(&[self.board[15],self.board[17],self.board[19]]).unwrap();},
+                (5,5,_) => {xs.extend_from_slice(&[self.board[12],self.board[16]]).unwrap();},
+                (6,2,_) => {xs.extend_from_slice(&[self.board[10],self.board[19]]).unwrap();},
+                (6,4,_) => {xs.extend_from_slice(&[self.board[16],self.board[18],self.board[20],self.board[22]]).unwrap();},
+                (6,6,_) => {xs.extend_from_slice(&[self.board[13],self.board[19]]).unwrap();},
+                (7,1,_) => {xs.extend_from_slice(&[self.board[9],self.board[22]]).unwrap();},
+                (7,4,_) => {xs.extend_from_slice(&[self.board[19],self.board[21],self.board[23]]).unwrap();},
+                (7,7,_) => {xs.extend_from_slice(&[self.board[14],self.board[22]]).unwrap();}
+                _ => {}
+            }
+            return xs;
+
+
+        }
 
         pub fn spot_muehle(&self,fd:(i8,i8,i8))->bool{
             let mut x_counter:i8= 0;
@@ -164,6 +197,21 @@ pub mod base{
             }
         }
 
+        pub fn movable(&self, player: i8) -> u8{
+            let mut ret = 0;
+            for field in &self.board{
+                if field.2 != player{
+                    continue;
+                }
+                let neighbors = self.get_neighbor(*field);
+                for n in neighbors{
+                    if n.2 == 0{
+                        ret += 1;
+                    }
+                }
+            }
+            return ret;
+        }
 
         pub fn place_control(&self, plz: (i8,i8,i8)) ->Result<bool,&str>{
             //Supi 
@@ -360,39 +408,7 @@ pub mod base{
         }
 
 
-        pub fn get_neighbor(&self, fd:(i8,i8,i8))->Vec<(i8,i8,i8), U24>{
-            let mut xs: Vec<(i8,i8,i8), U24> = Vec::new();
-            match fd {
-                (1,1,_) => {xs.extend_from_slice(&[self.board[1],self.board[9]]).unwrap();},
-                (1,4,_) => {xs.extend_from_slice(&[self.board[0],self.board[2],self.board[4]]).unwrap();},
-                (1,7,_) => {xs.extend_from_slice(&[self.board[1],self.board[14]]).unwrap();},
-                (2,2,_) => {xs.extend_from_slice(&[self.board[4],self.board[10]]).unwrap();},
-                (2,4,_) => {xs.extend_from_slice(&[self.board[1],self.board[3],self.board[5],self.board[7]]).unwrap();},
-                (2,6,_) => {xs.extend_from_slice(&[self.board[4],self.board[13]]).unwrap();},
-                (3,3,_) => {xs.extend_from_slice(&[self.board[11],self.board[7]]).unwrap();},
-                (3,4,_) => {xs.extend_from_slice(&[self.board[4],self.board[6],self.board[8]]).unwrap();},
-                (3,5,_) => {xs.extend_from_slice(&[self.board[7],self.board[12]]).unwrap();},
-                (4,1,_) => {xs.extend_from_slice(&[self.board[0],self.board[10],self.board[21]]).unwrap();},
-                (4,2,_) => {xs.extend_from_slice(&[self.board[3],self.board[9],self.board[11],self.board[18]]).unwrap();},
-                (4,3,_) => {xs.extend_from_slice(&[self.board[6],self.board[10],self.board[15]]).unwrap();},
-                (4,5,_) => {xs.extend_from_slice(&[self.board[8],self.board[13],self.board[17]]).unwrap();},
-                (4,6,_) => {xs.extend_from_slice(&[self.board[5],self.board[12],self.board[14],self.board[20]]).unwrap();},
-                (4,7,_) => {xs.extend_from_slice(&[self.board[2],self.board[13],self.board[23]]).unwrap();},
-                (5,3,_) => {xs.extend_from_slice(&[self.board[11],self.board[16]]).unwrap();},
-                (5,4,_) => {xs.extend_from_slice(&[self.board[15],self.board[17],self.board[19]]).unwrap();},
-                (5,5,_) => {xs.extend_from_slice(&[self.board[12],self.board[16]]).unwrap();},
-                (6,2,_) => {xs.extend_from_slice(&[self.board[10],self.board[19]]).unwrap();},
-                (6,4,_) => {xs.extend_from_slice(&[self.board[16],self.board[18],self.board[20],self.board[22]]).unwrap();},
-                (6,6,_) => {xs.extend_from_slice(&[self.board[13],self.board[19]]).unwrap();},
-                (7,1,_) => {xs.extend_from_slice(&[self.board[9],self.board[22]]).unwrap();},
-                (7,4,_) => {xs.extend_from_slice(&[self.board[19],self.board[21],self.board[23]]).unwrap();},
-                (7,7,_) => {xs.extend_from_slice(&[self.board[14],self.board[22]]).unwrap();}
-                _ => {}
-            }
-            return xs;
-
-
-        }
+        
     }
 
 
