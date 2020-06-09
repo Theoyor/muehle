@@ -205,7 +205,9 @@ pub mod base{
         pub fn spot_pot_muehle(&self, field: (i8,i8,i8)) -> u8{
             let mut ret = 0;
             let neighbors = self.get_neighbor(field);
+
             if field.2 == 0{
+                // Falls das Feld selbst die Lücke ist, muss nur geschaut werden ob mehr als drei Steine mit gleicher Farbe um sie rumstehen 
                 let mut neighbor_count = 0;
                 for n in neighbors{
                     if n.0 == field.0 && n.2 == field.1{
@@ -224,19 +226,23 @@ pub mod base{
                 let mut freex = (0,0,0);
                 let mut y = 0;
                 let mut freey = (0,0,0);
-
+                //Schaut wieviele eigene Steine neben ihm liegen und setzt, falls es gibt, ein freies Feld auf freex/freey
                 for n in neighbors{
                     if n.0 == field.0 && n.2 == field.2{
                         x += 1;
+                    }else if n.0 == field.0 && n.2 == 0{
                         freex = n;
                     }
                     if n.1 == field.1 && n.2 == field.2{
                         y += 1;
                         freey = n; 
+                    }else if n.1 == field.1 && n.2 == 0{
+                        freey = n;
                     }
                 }
 
-                if x == 1{
+                if x == 1 && freex != (0,0,0){
+                    //Falls field genau einen Nachbar auf der x-Achse hat und der andere kein gegner sondern leer ist
                     let mut nb_count = 0;
                     let nb = self.get_neighbor(freex);
                     for n in nb{
@@ -249,7 +255,7 @@ pub mod base{
                     }
                 }
                 //kein else
-                if y == 1{
+                if y == 1 && freey != (0,0,0){
                     let mut nb_count = 0;
                     let nb = self.get_neighbor(freey);
                     for n in nb{
@@ -260,11 +266,8 @@ pub mod base{
                     if nb_count >= 2{
                         ret += 1;
                     }
-
                 }
             }
-
-
             return ret;
         }
 
