@@ -153,7 +153,7 @@ pub mod base{
 
         }
 
-        pub fn spot_muehle(&self,fd:(i8,i8,i8))->bool{
+        pub fn spot_muehle(&self,fd:(i8,i8,i8))->i8{
             let mut x_counter:i8= 0;
             let mut y_counter:i8= 0;
             //* Zählt die Felder mit den gleichen x oder y Koordinaten und dem selben Spieler. 
@@ -190,10 +190,14 @@ pub mod base{
                     }
                 }
             }
-            if x_counter>2 || y_counter>2 {
-                return true
+            if x_counter>2 && y_counter>2 {
+                return 2;
+            } else if x_counter > 2 {
+                return 1;
+            } else if y_counter > 2 {
+                return 1;
             } else {
-                return false
+                return 0;
             }
         }
 
@@ -375,7 +379,7 @@ pub mod base{
                     st.change( (to.0,to.1,st.turn) );
                     
                     //falls Mühle entstanden ist den Zug nicht beenden und in schlagenden Zustand gehen
-                    if st.spot_muehle((to.0,to.1,st.turn)){
+                    if st.spot_muehle((to.0,to.1,st.turn))>0{
                         if st.turn == 1{
                             st.p1_mode = PlayMode::Move(true);
                         }else{   
@@ -448,7 +452,7 @@ pub mod base{
             match self.place_control(field){
                 Ok(_) =>{
                     st.change( (field.0,field.1,st.turn) );
-                    if st.spot_muehle((field.0,field.1,st.turn)){
+                    if st.spot_muehle((field.0,field.1,st.turn))>0{
                         if st.turn == 1{
                             // Hier wird gemoved
                             match st.p1_mode {
