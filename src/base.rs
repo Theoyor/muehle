@@ -39,7 +39,7 @@ pub mod base{
              .field("p1_mode", &self.p1_mode)
              .field("p2_mode", &self.p2_mode)
              .field("p1_stones", &self.p1_stones)
-             .field("p1_stones", &self.p1_stones)
+             .field("p2_stones", &self.p2_stones)
              .field("p1_turn", &self.turn)
              .finish()
         }
@@ -82,7 +82,7 @@ pub mod base{
             return ret;
         }
         */
-        //*evtl nicht nötig
+
         pub fn coords_to_field(&self, x:i8, y:i8 )->Result<(i8,i8,i8),&str>{
             for field in &self.board{
                 if field.0 == x && field.1 == y{
@@ -202,7 +202,8 @@ pub mod base{
         }
 
         //
-        pub fn spot_pot_muehle(&self, field: (i8,i8,i8)) -> i8{
+        pub fn spot_pot_muehle(&self, ffield: (i8,i8,i8)) -> i8{
+            let field = self.coords_to_field(ffield.0, ffield.1).unwrap();
             let mut ret  = 0;
             let neighbors = self.get_neighbor(field);
 
@@ -222,26 +223,28 @@ pub mod base{
                 }
 
             }else{ 
-                let mut x = 0;
+                let mut ownx:u8 = 0;
                 let mut freex = (0,0,0);
-                let mut y = 0;
+                let mut owny:u8 = 0;
                 let mut freey = (0,0,0);
                 //Schaut wieviele eigene Steine neben ihm liegen und setzt, falls es gibt, ein freies Feld auf freex/freey
                 for n in neighbors{
                     if n.0 == field.0 && n.2 == field.2{
-                        x += 1;
+                        ownx += 1;
                     }else if n.0 == field.0 && n.2 == 0{
                         freex = n;
                     }
                     if n.1 == field.1 && n.2 == field.2{
-                        y += 1;
-                        freey = n; 
+                        owny += 1;
                     }else if n.1 == field.1 && n.2 == 0{
                         freey = n;
                     }
                 }
 
-                if x == 1 && freex != (0,0,0){
+                println!("{}  {:?}",ownx ,freex);
+                println!("{}  {:?}",owny ,freey);
+
+                if ownx == 1 && freex != (0,0,0){
                     //Falls field genau einen Nachbar auf der x-Achse hat und der andere kein gegner sondern leer ist
                     let mut nb_count = 0;
                     let nb = self.get_neighbor(freex);
@@ -255,7 +258,7 @@ pub mod base{
                     }
                 }
                 //kein else
-                if y == 1 && freey != (0,0,0){
+                if owny == 1 && freey != (0,0,0){
                     let mut nb_count = 0;
                     let nb = self.get_neighbor(freey);
                     for n in nb{
@@ -478,12 +481,14 @@ pub mod base{
                             // Hier wird gemoved
                             match st.p1_mode {
                                 PlayMode::Place(false, 8) => st.p1_mode = PlayMode::Move(false),
+                                PlayMode::Place(false, n) =>st.p1_mode = PlayMode::Place(false, n+1),
                                 _ => {}
                             }   
                         }else{
                             // Hier wird gemoved
                             match st.p2_mode {
                                 PlayMode::Place(false, 8) =>st.p2_mode = PlayMode::Move(false),
+                                PlayMode::Place(false, n) =>st.p2_mode = PlayMode::Place(false, n+1),
                                 _ => {}
                             }   
                         }
