@@ -241,8 +241,8 @@ pub mod base{
                     }
                 }
 
-                println!("{}  {:?}",ownx ,freex);
-                println!("{}  {:?}",owny ,freey);
+                //println!("{}  {:?}",ownx ,freex);
+                //println!("{}  {:?}",owny ,freey);
 
                 if ownx == 1 && freex != (0,0,0){
                     //Falls field genau einen Nachbar auf der x-Achse hat und der andere kein gegner sondern leer ist
@@ -332,7 +332,7 @@ pub mod base{
                 return Err("Ein Feld existert nicht")
             }
             // wenn das Feld besetzt ist
-            if from.2 != 0 {
+            if to.2 != 0 {
                 return Err("Feld ist besetzt");
             }
             // wenn ein falscher Stein bewegt werden soll
@@ -431,9 +431,9 @@ pub mod base{
                         // Hier wird gemoved
                         match st.p2_mode {
                             //Zustand auf nicht-schlagen setzen
-                            PlayMode::Jump(true) => st.p1_mode = PlayMode::Jump(false),
-                            PlayMode::Place(true, n) => st.p1_mode = PlayMode::Place(false, n),
-                            PlayMode::Move(true) => st.p1_mode = PlayMode::Move(false), 
+                            PlayMode::Jump(true) => st.p2_mode = PlayMode::Jump(false),
+                            PlayMode::Place(true, n) => st.p2_mode = PlayMode::Place(false, n),
+                            PlayMode::Move(true) => st.p2_mode = PlayMode::Move(false), 
                             _ => return Err("Das sollte unmöglich sein, remove")
                         } 
                         //schauen ob p1 in einen anderen Zustand muss
