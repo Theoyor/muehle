@@ -274,6 +274,7 @@ pub mod base{
             return ret;
         }
 
+        //gibt aus, wieviele Steine eines Spielers sich bewegen können
         pub fn movable(&self, player: i8) -> i8{
             let mut ret = 0;
             for field in &self.board{
@@ -385,6 +386,15 @@ pub mod base{
                     st.change( (from.0,from.1, 0) );
                     st.change( (to.0,to.1,st.turn) );
                     
+                    //Falls sich der gegner nicht mehr bewegen kann, hat man gewonnen
+                    if 0 == self.movable(st.turn*-1){
+                        if st.turn == 1{
+                            st.p1_mode = PlayMode::Won;
+                        }else{   
+                            st.p2_mode = PlayMode::Won;
+                        }
+                    }
+
                     //falls Mühle entstanden ist den Zug nicht beenden und in schlagenden Zustand gehen
                     if st.spot_muehle((to.0,to.1,st.turn))>0{
                         if st.turn == 1{
@@ -452,13 +462,15 @@ pub mod base{
                 Err(msg) => return Err(msg)
             }
         }
-        //Bekommt das zu verändernde Feld eingegeben
+
+        //Bekommt das zu verändernde Feld eingegeben, Man gewinnt aktuell leider noch nicht, wenn man nach dem letzten place den Gegner eingeschlossen hat
         pub fn place(&self, field:(i8,i8,i8))->Result<State,&str>{ 
-            //TODO Testen ob gewonnen
             let mut st = self.clone();
             match self.place_control(field){
                 Ok(_) =>{
                     st.change( (field.0,field.1,st.turn) );
+
+                    //Falls Mühle gelegt wurde
                     if st.spot_muehle((field.0,field.1,st.turn))>0{
                         if st.turn == 1{
                             // Hier wird gemoved
@@ -475,17 +487,16 @@ pub mod base{
                                 _ => {}
                             }   
                         }
+                    //Falls keine Mühle gebildet wurde
                     }else{
-                        //Wen 8 Steine gesetzt worden sind, in den Move-Zustand wechseln
+                        //Wen 8 Steine gesetzt worden sind, in den Move-Zustand wechseln, sonst den Steine-Counter erhöhen
                         if st.turn == 1{
-                            // Hier wird gemoved
                             match st.p1_mode {
                                 PlayMode::Place(false, 8) => st.p1_mode = PlayMode::Move(false),
                                 PlayMode::Place(false, n) =>st.p1_mode = PlayMode::Place(false, n+1),
                                 _ => {}
                             }   
                         }else{
-                            // Hier wird gemoved
                             match st.p2_mode {
                                 PlayMode::Place(false, 8) =>st.p2_mode = PlayMode::Move(false),
                                 PlayMode::Place(false, n) =>st.p2_mode = PlayMode::Place(false, n+1),
@@ -502,7 +513,7 @@ pub mod base{
             }
         }
 
-
+        //TODO Hier muss noch movable eingebaut werden
         pub fn spielstandbewertung(&self)->i8 {
             let x = self.movable(1)-self.movable(-1);
 
