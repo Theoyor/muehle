@@ -4,7 +4,7 @@ mod action;
 use action::action as act;
 mod screen;
 use screen::start;
-use crate::action::action::descend;
+use crate::action::action::start as strt;
 use std::time::{Duration,SystemTime};
 
 fn main() {
@@ -19,8 +19,9 @@ fn main() {
     fd.spielstandbewertung();
     //println!("{:?}",fd.steineSchlagen());
     //screen::start();
-    //println!("{}", max_three(3,5,4));
-    println!("{}",descend(7,fd,-100,100));
+    let tup = strt(6,fd);
+    println!("Bewertung: {}",tup.0);
+    println!("{:?}", tup.1);
 
     let difference = sys_time.elapsed();
     println!("{:?}", difference);
