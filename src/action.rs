@@ -29,7 +29,7 @@ pub mod action{
                     let mut a :(i8,i8,i8) = (0,0,0);
                     let mut b :(i8,i8,i8) = (0,0,0);
                     let mut c :(i8,i8,i8)= (0,0,0);
-                    
+                    //sucht die 3 Felder mit den eigenen Steinen heraus
                     for field in &state.board{
                         if field.2 == 1{
                             if a == (0,0,0){
@@ -43,18 +43,20 @@ pub mod action{
                             }
                         }
                     }
-                        for field in &state.board{
-                            if field.2 == 0{
-                                let ma = super::super::max_three(descend( depth-1 ,state.ki_mov(a, *field)), 
-                                descend( depth-1 ,state.ki_mov(b, *field)), 
-                                descend( depth-1 ,state.ki_mov(c, *field)));
-                                maxeval = cmp::max(ma,maxeval);
-                                
-                            }
+                    // Testet descend mit allen möglichen Feldern und den drei "eigenen" Feldern
+                    for field in &state.board{
+                        if field.2 == 0{
+                            let ma = super::super::max_three(descend( depth-1 ,state.ki_mov(a, *field)), 
+                            descend( depth-1 ,state.ki_mov(b, *field)), 
+                            descend( depth-1 ,state.ki_mov(c, *field)));
+                            maxeval = cmp::max(ma,maxeval);
+                            
                         }
+                    }
                     },
 
                 PlayMode::Move =>{
+                    //Sucht alle leeren Felder und testet auf diesen Feldern mov von allen benachbarten Feldern, die einen eigenen Stein beherbergen 
                     for field in &state.board{
                         if field.2 == 0{
                             for fd in state.get_neighbor(*field){
@@ -65,7 +67,9 @@ pub mod action{
                         }
                     }
                 },
-                PlayMode::Place(n) =>{
+
+                PlayMode::Place(_) =>{
+                    //sucht alle leeren Felder und testet ein plazieren auf sie
                     for field in &state.board{
                       if field.2 == 0 {
                         maxeval = cmp::max(descend(depth-1,state.ki_place(*field)), maxeval);
@@ -122,7 +126,7 @@ pub mod action{
                         }
                     }
                 },
-                PlayMode::Place(n) =>{
+                PlayMode::Place(_) =>{
                     for field in &state.board{
                         if field.2 == 0 {
                         mineval = cmp::min(descend(depth-1,state.ki_place(*field)), mineval);
@@ -136,7 +140,6 @@ pub mod action{
         return  mineval;
 
         }
-        return 0;
 
     }
 
