@@ -16,6 +16,7 @@ fn main() {
     fd.spielstandbewertung();
     println!("{:?}",fd.steineSchlagen());
     //screen::start();
+    println!("{}", max_three(3,5,4));
 }
 
 fn mov_test(mut fd:State)->State{
@@ -60,3 +61,14 @@ fn place_tst(mut fd:State)->State{
     return fd;
 }
 
+pub fn max_three(a:i8,b:i8,c:i8)->i8{
+    if a>=b && a>=c {
+        return a;
+    }
+    else if b >= a && b >= c {
+        return b;
+    }
+    else {
+        return c;
+    }
+}
