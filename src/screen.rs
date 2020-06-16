@@ -4,11 +4,13 @@ use ggez::event::{self, MouseButton};
 use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::conf;
+use super::base::base::State;
 
 
 struct MainState {
     mouse_down: bool,
     pos_x: f32,
+    
 }
 
 impl MainState {
@@ -124,9 +126,13 @@ impl event::EventHandler for MainState {
         graphics::draw(ctx, &rahmen2, (na::Point2::new(0.0, 0.0),))?;
         
 
+
+
         graphics::present(ctx)?;
         Ok(())
     }
+
+    
 
     fn mouse_button_down_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
         self.mouse_down = true;
