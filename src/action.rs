@@ -45,9 +45,10 @@ pub mod action{
                     }
                         for field in &state.board{
                             if field.2 == 0{
-                                maxeval = super::super::max_three(descend( depth-1 ,state.ki_mov(a, *field)), 
+                                let ma = super::super::max_three(descend( depth-1 ,state.ki_mov(a, *field)), 
                                 descend( depth-1 ,state.ki_mov(b, *field)), 
                                 descend( depth-1 ,state.ki_mov(c, *field)));
+                                maxeval = cmp::max(ma,maxeval);
                                 
                             }
                         }
@@ -102,9 +103,10 @@ pub mod action{
                     }
                         for field in &state.board{
                             if field.2 == 0{
-                                mineval = super::super::min_three(descend( depth-1 ,state.ki_mov(a, *field)), 
+                                let mi = super::super::min_three(descend( depth-1 ,state.ki_mov(a, *field)), 
                                     descend( depth-1 ,state.ki_mov(b, *field)), 
                                     descend( depth-1 ,state.ki_mov(c, *field)));
+                                mineval = cmp::min(mi,mineval);
                             }
                         }
                     },
@@ -114,7 +116,7 @@ pub mod action{
                         if field.2 == 0{
                             for fd in state.get_neighbor(*field){
                                 if fd.2 == -1{
-                                    mineval = cmp::max(descend(depth-1, state.ki_mov(fd, *field)), mineval);
+                                    mineval = cmp::min(descend(depth-1, state.ki_mov(fd, *field)), mineval);
                                 }
                             }
                         }
@@ -123,7 +125,7 @@ pub mod action{
                 PlayMode::Place(n) =>{
                     for field in &state.board{
                         if field.2 == 0 {
-                        mineval = cmp::max(descend(depth-1,state.ki_place(*field)), mineval);
+                        mineval = cmp::min(descend(depth-1,state.ki_place(*field)), mineval);
                         }  
                     }
                 },
