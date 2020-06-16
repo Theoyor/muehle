@@ -1,7 +1,7 @@
 mod base;   
 use base::base::State;
 mod action;
-use action::action;
+use action::action as act;
 mod screen;
 use screen::start;
 
@@ -14,6 +14,7 @@ fn main() {
     println!("{}", i);
     println!("{:?}", fd);
     fd.spielstandbewertung();
+    println!("{:?}",fd.steineSchlagen());
     //screen::start();
 }
 

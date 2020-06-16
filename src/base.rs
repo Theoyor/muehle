@@ -542,7 +542,28 @@ pub mod base{
             return x+y+z+r;
         }
 
-        
+        pub fn steineSchlagen(&self)->(i8,i8,i8){
+            let mut bestStone : (i8,i8,i8) = (0,0,0);
+            let mut bestStoneValue : i8 = 0;
+            for field in &self.board {
+                let mut stoneValue : i8 = 1;
+                if  field.2 == 0 || field.2 == self.turn || self.spot_muehle(*field)>0 {
+                    continue;
+                }
+                if self.spot_pot_muehle(*field)>0 {
+                    stoneValue = stoneValue + self.spot_pot_muehle(*field);
+                }
+
+                if stoneValue > bestStoneValue {
+                    bestStone = *field;
+                    bestStoneValue = stoneValue;
+                }
+            }
+        // Nicht unbedingt sehr intelligent fehlt mindestens noch sowas wie nicht bewegliche Steine
+            println!("hello {}",bestStoneValue);
+            return bestStone;
+        }
+
     }
 
 
