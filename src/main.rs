@@ -20,7 +20,7 @@ fn main() {
     //println!("{:?}",fd.steineSchlagen());
     //screen::start();
     //println!("{}", max_three(3,5,4));
-    println!("{}",descend(6,fd));
+    println!("{}",descend(7,fd,-100,100));
 
     let difference = sys_time.elapsed();
     println!("{:?}", difference);

@@ -4,8 +4,9 @@ pub mod action{
     use super::super::base::base::PlayMode;
     use std::cmp;
 
-    pub fn descend(depth: i8, state: State )->i8{ //möglicherweise zu i16 ändern 
-        
+    pub fn descend(depth: i8, state: State, alpha: i8, beta: i8 )->i8{ //möglicherweise zu i16 ändern
+        let mut alph = alpha;
+        let mut bet = beta;
         // Wenn jemand im vorerigen Zug gewonnen hat, wird eine hohe Bewertung ausgegeben
         if state.p1_mode == PlayMode::Won{
             return 110; //Hardcode ist lit
@@ -46,10 +47,14 @@ pub mod action{
                     // Testet descend mit allen möglichen Feldern und den drei "eigenen" Feldern
                     for field in &state.board{
                         if field.2 == 0{
-                            let ma = super::super::max_three(descend( depth-1 ,state.ki_mov(a, *field)), 
-                            descend( depth-1 ,state.ki_mov(b, *field)), 
-                            descend( depth-1 ,state.ki_mov(c, *field)));
-                            maxeval = cmp::max(ma,maxeval);
+                            let eval = super::super::max_three(descend( depth-1 ,state.ki_mov(a, *field),alph,bet),
+                            descend( depth-1 ,state.ki_mov(b, *field),alph,bet),
+                            descend( depth-1 ,state.ki_mov(c, *field),alph,bet));
+                            maxeval = cmp::max(eval,maxeval);
+                            alph = cmp::max(alph, eval);
+                            if bet <= alph {
+                                break;
+                            }
                             
                         }
                     }
@@ -61,7 +66,13 @@ pub mod action{
                         if field.2 == 0{
                             for fd in state.get_neighbor(*field){
                                 if fd.2 == 1{
-                                    maxeval = cmp::max(descend(depth-1, state.ki_mov(fd, *field)), maxeval);
+                                    // hier wird die rekursion ausgeführt
+                                    let eval :i8 = descend(depth-1, state.ki_mov(fd, *field),alph,bet);
+                                    maxeval = cmp::max(eval, maxeval);
+                                    alph = cmp::max(alph, eval);
+                                    if bet <= alph {
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -72,7 +83,12 @@ pub mod action{
                     //sucht alle leeren Felder und testet ein plazieren auf sie
                     for field in &state.board{
                       if field.2 == 0 {
-                        maxeval = cmp::max(descend(depth-1,state.ki_place(*field)), maxeval);
+                          let eval :i8 = descend(depth-1,state.ki_place(*field),alph,bet);
+                          maxeval = cmp::max(eval, maxeval);
+                          alph = cmp::max(alph,eval);
+                          if bet <= alph {
+                              break;
+                          }
                       }  
                     }
                 },
@@ -107,10 +123,14 @@ pub mod action{
                     }
                         for field in &state.board{
                             if field.2 == 0{
-                                let mi = super::super::min_three(descend( depth-1 ,state.ki_mov(a, *field)), 
-                                    descend( depth-1 ,state.ki_mov(b, *field)), 
-                                    descend( depth-1 ,state.ki_mov(c, *field)));
-                                mineval = cmp::min(mi,mineval);
+                                let eval = super::super::min_three(descend( depth-1 ,state.ki_mov(a, *field),alph,bet),
+                                    descend( depth-1 ,state.ki_mov(b, *field),alph,bet),
+                                    descend( depth-1 ,state.ki_mov(c, *field),alph,bet));
+                                mineval = cmp::min(eval,mineval);
+                                bet = cmp::min(bet,eval);
+                                if bet <= alph {
+                                    break;
+                                }
                             }
                         }
                     },
@@ -120,7 +140,12 @@ pub mod action{
                         if field.2 == 0{
                             for fd in state.get_neighbor(*field){
                                 if fd.2 == -1{
-                                    mineval = cmp::min(descend(depth-1, state.ki_mov(fd, *field)), mineval);
+                                    let eval :i8 = descend(depth-1, state.ki_mov(fd, *field),alph,bet);
+                                    mineval = cmp::min(eval,mineval);
+                                    bet = cmp::min(bet,eval);
+                                    if bet <= alph {
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -129,7 +154,12 @@ pub mod action{
                 PlayMode::Place(_) =>{
                     for field in &state.board{
                         if field.2 == 0 {
-                        mineval = cmp::min(descend(depth-1,state.ki_place(*field)), mineval);
+                            let eval : i8 = descend(depth-1,state.ki_place(*field),alph,bet);
+                            mineval = cmp::min(eval, mineval);
+                            bet = cmp::min(bet,eval);
+                            if bet <= alph {
+                                break;
+                            }
                         }  
                     }
                 },
