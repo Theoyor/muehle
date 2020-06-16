@@ -27,8 +27,8 @@ pub mod base{
         pub board: Vec<(i8,i8,i8), U24>,
         pub p1_mode: PlayMode,
         pub p2_mode: PlayMode,
-        pub p1_stones: u8,
-        pub p2_stones: u8,
+        pub p1_stones: i8,
+        pub p2_stones: i8,
         pub turn: i8,
     }
 
