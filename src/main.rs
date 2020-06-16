@@ -1,7 +1,7 @@
 mod base;   
 use base::base::State;
 mod action;
-use action::action;
+//use action::action;
 mod screen;
 use screen::start;
 
@@ -14,7 +14,7 @@ fn main() {
     println!("{}", i);
     println!("{:?}", fd);
     fd.spielstandbewertung();
-    //screen::start();
+    screen::start();
 }
 
 fn mov_test(mut fd:State)->State{
