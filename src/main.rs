@@ -60,3 +60,26 @@ fn place_tst(mut fd:State)->State{
     return fd;
 }
 
+pub fn max_three(a:i8,b:i8,c:i8)->i8{
+    if a>=b && a>=c {
+        return a;
+    }
+    else if b >= a && b >= c {
+        return b;
+    }
+    else {
+        return c;
+    }
+}
+
+pub fn min_three(a:i8,b:i8,c:i8)->i8{
+    if a<=b && a<=c {
+        return a;
+    }
+    else if b <= a && b <= c {
+        return b;
+    }
+    else {
+        return c;
+    }
+}
