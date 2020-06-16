@@ -11,6 +11,7 @@ fn main() {
     let i = fd.spot_pot_muehle((4,2,1));
     println!("{}", i);
     println!("{:?}", fd);
+    fd.spielstandbewertung();
     //screen::start();
 }
 

@@ -513,8 +513,10 @@ pub mod base{
             }
         }
 
-        //TODO Hier muss noch movable eingebaut werden
+
         pub fn spielstandbewertung(&self)->i8 {
+            let r: i8 = self.p1_stones - self.p2_stones;
+
             let x = self.movable(1)-self.movable(-1);
 
             let mut y: i8 = 0;
@@ -544,8 +546,10 @@ pub mod base{
             z += self.spot_pot_muehle(self.board[14])*self.board[14].2;
 
 
-
-            return y;
+            println!("{}", x);
+            println!("{}", y);
+            println!("{}", z);
+            return x+y+z+r;
         }
 
         
