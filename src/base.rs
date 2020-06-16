@@ -651,7 +651,7 @@ pub mod base{
             }
             // Nicht unbedingt sehr intelligent fehlt mindestens noch sowas wie nicht bewegliche Steine
             // guckt nur ob teil einer potenziellen mühle bzw ob er überhaupt geschlagen werden darf
-            println!("hello {}",bestStoneValue);
+            //println!("hello {}",bestStoneValue);
             return bestStone;
         }
 
