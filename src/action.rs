@@ -5,12 +5,13 @@ pub mod action{
     use std::cmp;
 
     pub fn descend(depth: i8, state: State )->i8{ //möglicherweise zu i16 ändern 
+        // Wenn jemand im vorerigen Zug gewonnen hat, wird eine hohe Bewertung ausgegeben
         if state.p1_mode == PlayMode::Won{
             return 100; //Hardcode ist lit
         }else if state.p2_mode == PlayMode::Won{
             return -100;
         }
-
+        
         if depth == 0{
             return state.spielstandbewertung();
         }

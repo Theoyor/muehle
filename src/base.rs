@@ -418,10 +418,11 @@ pub mod base{
             
             //removen
             st.change((field.0,field.1, 0));
+            //schlagen nicht mehr erlauben
+
+            st.allowed = false; 
             if st.turn == 1{
 
-                //schlagen nicht mehr erlauben
-                st.allowed = false; 
                 //Schauen ob p2 in einen anderen Zustand wechseln muss
                 st.p2_stones -= 1;
                 if st.p2_stones == 3{
@@ -432,13 +433,20 @@ pub mod base{
             }
             if st.turn == -1{
                 
-                //schlagen nicht erlauben
-                st.allowed = false; 
                 //schauen ob p1 in einen anderen Zustand muss
                 st.p1_stones -= 1;
                 if st.p1_stones == 3{
                     st.p1_mode = PlayMode::Jump;
                 }else if st.p1_stones < 3{
+                    st.p2_mode = PlayMode::Won;
+                }  
+            }
+
+            //Falls sich der gegner nicht mehr bewegen kann, hat man gewonnen
+            if 0 == self.movable(st.turn*-1){
+                if st.turn == 1{
+                    st.p1_mode = PlayMode::Won;
+                }else{   
                     st.p2_mode = PlayMode::Won;
                 }
             }
@@ -563,6 +571,26 @@ pub mod base{
             if st.spot_muehle((to.0,to.1,st.turn))>0{
                 let field = st.steineSchlagen();   
                 st.change((field.0,field.1, 0))
+            }
+            if st.turn == 1{
+
+                //Schauen ob p2 in einen anderen Zustand muss
+                st.p2_stones -= 1;
+                if st.p2_stones == 3{
+                    st.p2_mode = PlayMode::Jump;
+                }else if st.p2_stones < 3{
+                    st.p1_mode = PlayMode::Won;
+                }
+            }
+            if st.turn == -1{
+                
+                //schauen ob p1 in einen anderen Zustand muss
+                st.p1_stones -= 1;
+                if st.p1_stones == 3{
+                    st.p1_mode = PlayMode::Jump;
+                }else if st.p1_stones < 3{
+                    st.p2_mode = PlayMode::Won;
+                }  
             }
             
             st.turn *= -1;
