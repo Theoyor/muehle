@@ -8,9 +8,9 @@ pub mod action{
         
         // Wenn jemand im vorerigen Zug gewonnen hat, wird eine hohe Bewertung ausgegeben
         if state.p1_mode == PlayMode::Won{
-            return 100; //Hardcode ist lit
+            return 110; //Hardcode ist lit
         }else if state.p2_mode == PlayMode::Won{
-            return -100;
+            return -110;
         }
         // Wenn Suchtiefe ausgeschöpft, führe Spielstandsbwerzúng durch
         if depth == 0{
@@ -71,7 +71,7 @@ pub mod action{
                       }  
                     }
                 },
-                _=>{}
+                _=>{println!("alter was geht max")}
                     
             }
 
@@ -127,7 +127,7 @@ pub mod action{
                         }  
                     }
                 },
-                _=>{}
+                _=>{println!("alter was geht min")}
                     
             }
 

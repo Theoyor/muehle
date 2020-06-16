@@ -4,6 +4,7 @@ mod action;
 use action::action as act;
 mod screen;
 use screen::start;
+use crate::action::action::descend;
 
 fn main() {
     let mut fd = State::new();
@@ -14,9 +15,10 @@ fn main() {
     println!("{}", i);
     println!("{:?}", fd);
     fd.spielstandbewertung();
-    println!("{:?}",fd.steineSchlagen());
+    //println!("{:?}",fd.steineSchlagen());
     //screen::start();
-    println!("{}", max_three(3,5,4));
+    //println!("{}", max_three(3,5,4));
+    println!("{}",descend(3,fd));
 }
 
 fn mov_test(mut fd:State)->State{
