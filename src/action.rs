@@ -5,17 +5,19 @@ pub mod action{
     use std::cmp;
 
     pub fn descend(depth: i8, state: State )->i8{ //möglicherweise zu i16 ändern 
+        
         // Wenn jemand im vorerigen Zug gewonnen hat, wird eine hohe Bewertung ausgegeben
         if state.p1_mode == PlayMode::Won{
             return 100; //Hardcode ist lit
         }else if state.p2_mode == PlayMode::Won{
             return -100;
         }
-        
+        // Wenn Suchtiefe ausgeschöpft, führe Spielstandsbwerzúng durch
         if depth == 0{
             return state.spielstandbewertung();
         }
 
+        //hier kommt rekursives Absteigen für entweder maximalen Spieler (1) oder minimalen Spieler (-1)
         if state.turn == 1{
             let mut maxeval:i8 = -100;
             
@@ -46,6 +48,7 @@ pub mod action{
                                 maxeval = super::super::max_three(descend( depth-1 ,state.ki_mov(a, *field)), 
                                 descend( depth-1 ,state.ki_mov(b, *field)), 
                                 descend( depth-1 ,state.ki_mov(c, *field)));
+                                
                             }
                         }
                     },
