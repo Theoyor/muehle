@@ -16,6 +16,7 @@ fn main() {
     fd.spielstandbewertung();
     println!("{:?}",fd.steineSchlagen());
     //screen::start();
+    println!("{}", max_three(3,5,4));
 }
 
 fn mov_test(mut fd:State)->State{
