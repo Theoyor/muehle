@@ -9,7 +9,7 @@ pub mod base{
     
 
 
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq)]
     pub enum PlayMode{
         // Der bool ist true: Schlagen ist erlaubt, andernfalls nicht
         Place(bool,u8),
@@ -202,8 +202,8 @@ pub mod base{
         }
 
         //
-        pub fn spot_pot_muehle(&self, ffield: (i8,i8,i8)) -> i8{
-            let field = self.coords_to_field(ffield.0, ffield.1).unwrap();
+        pub fn spot_pot_muehle(&self, field: (i8,i8,i8)) -> i8{
+            //let field = self.coords_to_field(ffield.0, ffield.1).unwrap();
             let mut ret  = 0;
             let neighbors = self.get_neighbor(field);
 
@@ -504,7 +504,7 @@ pub mod base{
         }
 
 
-        pub fn spielstandbewertung(&self)->i8 {
+        pub fn spielstandbewertung(&self)->i8 { //möglicherweise zu i16 ändern 
             let r: i8 = self.p1_stones - self.p2_stones;
 
             let x = self.movable(1)-self.movable(-1);
