@@ -14,6 +14,7 @@ fn main() {
     println!("{}", i);
     println!("{:?}", fd);
     fd.spielstandbewertung();
+    println!("{:?}",fd.steineSchlagen());
     //screen::start();
 }
 
