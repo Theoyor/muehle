@@ -504,11 +504,14 @@ pub mod base{
         }
 
 
-        pub fn spielstandbewertung(&self)->i8 { //möglicherweise zu i16 ändern 
+        pub fn spielstandbewertung(&self)->i8 { //möglicherweise zu i16 ändern
+            // anzahle der steine verrechnen
             let r: i8 = self.p1_stones - self.p2_stones;
 
+            // anzahl der beweglichen steine verrechnen
             let x = self.movable(1)-self.movable(-1);
 
+            // anzahl der mühlen verrechnen
             let mut y: i8 = 0;
             y += self.spot_muehle(self.board[0])*self.board[0].2;
             y += self.spot_muehle(self.board[3])*self.board[3].2;
@@ -521,6 +524,7 @@ pub mod base{
             y += self.spot_muehle(self.board[13])*self.board[13].2;
             y += self.spot_muehle(self.board[19])*self.board[19].2;
 
+            // anzahl der pot_mühlen verrechnen
             let mut z: i8 = 0;
             z += self.spot_pot_muehle(self.board[1])*self.board[1].2;
             z += self.spot_pot_muehle(self.board[4])*self.board[4].2;
@@ -536,9 +540,9 @@ pub mod base{
             z += self.spot_pot_muehle(self.board[14])*self.board[14].2;
 
 
-            println!("{}", x);
+            /*println!("{}", x);
             println!("{}", y);
-            println!("{}", z);
+            println!("{}", z); */
             return x+y+z+r;
         }
 
@@ -553,13 +557,13 @@ pub mod base{
                 if self.spot_pot_muehle(*field)>0 {
                     stoneValue = stoneValue + self.spot_pot_muehle(*field);
                 }
-
                 if stoneValue > bestStoneValue {
                     bestStone = *field;
                     bestStoneValue = stoneValue;
                 }
             }
-        // Nicht unbedingt sehr intelligent fehlt mindestens noch sowas wie nicht bewegliche Steine
+            // Nicht unbedingt sehr intelligent fehlt mindestens noch sowas wie nicht bewegliche Steine
+            // guckt nur ob teil einer potenziellen mühle bzw ob er überhaupt geschlagen werden darf
             println!("hello {}",bestStoneValue);
             return bestStone;
         }
