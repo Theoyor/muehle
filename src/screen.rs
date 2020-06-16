@@ -23,6 +23,46 @@ impl MainState {
     }
 }
 
+pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (i16,i16) {
+    match fd {
+        (1, 1, 0) => return (100,500),
+        (1, 4, 0) => return (100,300),
+        (1, 7, 0) => return (100,100),
+
+        (2, 2, 0) => return (175,425),
+        (2, 4, 0) => return (175,300),
+        (2, 6, 0) => return (175,175),
+
+        (3, 3, 0) => return (250,350),
+        (3, 4, 0) => return (250,300),
+        (3, 5, 0) => return (250,250),
+
+        (4, 1, 0) => return (300, 500),
+        (4, 2, 0) => return (300, 425),
+        (4, 3, 0) => return (300, 350),
+
+        (4, 5, 0) => return (300, 250),
+        (4, 6, 0) => return (300, 175),
+        (4, 7, 0) => return (300, 100),
+
+        (5, 3, 0) => return (350,350),
+        (5, 4, 0) => return (350,300),
+        (5, 5, 0) => return (350,250),
+
+        (6, 2, 0) => return (425,425),
+        (6, 4, 0) => return (425,300),
+        (6, 6, 0) => return (425,175),
+
+        (7, 1, 0) => return (500,500),
+        (7, 4, 0) => return (500,300),
+        (7, 7, 0) => return (500,100),
+                
+        _ => return (-1,-1)
+    }
+
+    
+}
+
 
 
 impl event::EventHandler for MainState {
@@ -125,7 +165,10 @@ impl event::EventHandler for MainState {
         )?;
         graphics::draw(ctx, &rahmen2, (na::Point2::new(0.0, 0.0),))?;
         
+        //Spielsteine:
 
+        let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::fill(), na::Point2::new(100.0, 100.0), 14.0, 0.1, graphics::BLACK).unwrap();
+        graphics::draw(ctx, &spielstein, (na::Point2::new(0.0, 0.0),))?;
 
 
         graphics::present(ctx)?;
