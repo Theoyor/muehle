@@ -5,8 +5,10 @@ use action::action as act;
 mod screen;
 use screen::start;
 use crate::action::action::descend;
+use std::time::{Duration,SystemTime};
 
 fn main() {
+    let sys_time = SystemTime::now();
     let mut fd = State::new();
 
     fd = place_tst(fd);
@@ -18,7 +20,10 @@ fn main() {
     //println!("{:?}",fd.steineSchlagen());
     //screen::start();
     //println!("{}", max_three(3,5,4));
-    println!("{}",descend(3,fd));
+    println!("{}",descend(6,fd));
+
+    let difference = sys_time.elapsed();
+    println!("{:?}", difference);
 }
 
 fn mov_test(mut fd:State)->State{
