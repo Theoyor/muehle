@@ -12,9 +12,10 @@ pub mod base{
     #[derive(Clone, Debug, PartialEq)]
     pub enum PlayMode{
         // Der bool ist true: Schlagen ist erlaubt, andernfalls nicht
-        Place(bool,u8),
-        Move(bool),
-        Jump(bool),
+        Place(u8),
+        Move,
+        Jump,
+        Remove,
         Won,
         Lost,
     }
@@ -29,6 +30,7 @@ pub mod base{
         pub p2_mode: PlayMode,
         pub p1_stones: i8,
         pub p2_stones: i8,
+        pub allowed: bool,
         pub turn: i8,
     }
 
@@ -58,10 +60,11 @@ pub mod base{
 
             State{
                 board: xs,
-                p1_mode: PlayMode::Place(false, 0),
-                p2_mode: PlayMode::Place(false, 0),
+                p1_mode: PlayMode::Place(0),
+                p2_mode: PlayMode::Place(0),
                 p1_stones: 9,
                 p2_stones: 9,
+                allowed: false,
                 turn: 1, //TODO evtl. Seiten auswaehlen
             }
         }
@@ -352,13 +355,13 @@ pub mod base{
             // wenn im Jumpmode true sonst false
             if self.turn == 1  {
                 match self.p1_mode {
-                    PlayMode::Jump(_) => return Ok(true),
+                    PlayMode::Jump => return Ok(true),
                     _ => return Err("Das Feld ist zuweit weg")
                 }
             }
             if self.turn == -1 {
                 match self.p2_mode {
-                    PlayMode::Jump(_) => return Ok(true),
+                    PlayMode::Jump => return Ok(true),
                     _ => return Err("Das Feld ist zuweit weg")
                 }
             }
@@ -396,9 +399,9 @@ pub mod base{
             //falls Mühle entstanden ist den Zug nicht beenden und in schlagenden Zustand gehen
             if st.spot_muehle((to.0,to.1,st.turn))>0{
                 if st.turn == 1{
-                    st.p1_mode = PlayMode::Move(true);
+                    st.allowed = true;
                 }else{   
-                    st.p2_mode = PlayMode::Move(true);
+                    st.allowed = true;
                 }
             //Andernfalls Zug beenden und Zustand beibehalten
             }else{
@@ -416,35 +419,25 @@ pub mod base{
             //removen
             st.change((field.0,field.1, 0));
             if st.turn == 1{
-                // Hier wird gemoved
-                match st.p1_mode {
-                    //Zustand wieder auf nicht-schlagen setzen
-                    PlayMode::Jump(true) => st.p1_mode = PlayMode::Jump(false),
-                    PlayMode::Place(true,n) => st.p1_mode = PlayMode::Place(false, n),
-                    PlayMode::Move(true) => st.p1_mode = PlayMode::Move(false), 
-                    _ => return Err("Das sollte unmöglich sein, remove")
-                } 
+
+                //schlagen nicht mehr erlauben
+                st.allowed = false; 
                 //Schauen ob p2 in einen anderen Zustand wechseln muss
                 st.p2_stones -= 1;
                 if st.p2_stones == 3{
-                    st.p2_mode = PlayMode::Jump(false);
+                    st.p2_mode = PlayMode::Jump;
                 }else if st.p2_stones < 3{
                     st.p1_mode = PlayMode::Won;
                 }
             }
             if st.turn == -1{
-                // Hier wird gemoved
-                match st.p2_mode {
-                    //Zustand auf nicht-schlagen setzen
-                    PlayMode::Jump(true) => st.p2_mode = PlayMode::Jump(false),
-                    PlayMode::Place(true, n) => st.p2_mode = PlayMode::Place(false, n),
-                    PlayMode::Move(true) => st.p2_mode = PlayMode::Move(false), 
-                    _ => return Err("Das sollte unmöglich sein, remove")
-                } 
+                
+                //schlagen nicht erlauben
+                st.allowed = false; 
                 //schauen ob p1 in einen anderen Zustand muss
                 st.p1_stones -= 1;
                 if st.p1_stones == 3{
-                    st.p1_mode = PlayMode::Jump(false);
+                    st.p1_mode = PlayMode::Jump;
                 }else if st.p1_stones < 3{
                     st.p2_mode = PlayMode::Won;
                 }
@@ -464,18 +457,19 @@ pub mod base{
 
             //Falls Mühle gelegt wurde
             if st.spot_muehle((field.0,field.1,st.turn))>0{
+                st.allowed = true;
                 if st.turn == 1{
                     // Hier wird gemoved
                     match st.p1_mode {
-                        PlayMode::Place(false, 8) =>st.p1_mode = PlayMode::Move(true),
-                        PlayMode::Place(false, n) =>st.p1_mode = PlayMode::Place(true, n+1),
+                        PlayMode::Place( 8) =>st.p1_mode = PlayMode::Move,
+                        PlayMode::Place(n) =>st.p1_mode = PlayMode::Place(n+1),
                         _ => {}
                     }   
                 }else{
                     // Hier wird gemoved
                     match st.p2_mode {
-                        PlayMode::Place(false, 8) =>st.p2_mode = PlayMode::Move(true),
-                        PlayMode::Place(false, n) =>st.p2_mode = PlayMode::Place(true, n+1),
+                        PlayMode::Place(8) =>st.p2_mode = PlayMode::Move,
+                        PlayMode::Place(n) =>st.p2_mode = PlayMode::Place(n+1),
                         _ => {}
                     }   
                 }
@@ -484,14 +478,14 @@ pub mod base{
                 //Wen 8 Steine gesetzt worden sind, in den Move-Zustand wechseln, sonst den Steine-Counter erhöhen
                 if st.turn == 1{
                     match st.p1_mode {
-                        PlayMode::Place(false, 8) => st.p1_mode = PlayMode::Move(false),
-                        PlayMode::Place(false, n) =>st.p1_mode = PlayMode::Place(false, n+1),
+                        PlayMode::Place(8) => st.p1_mode = PlayMode::Move,
+                        PlayMode::Place(n) =>st.p1_mode = PlayMode::Place(n+1),
                         _ => {}
                     }   
                 }else{
                     match st.p2_mode {
-                        PlayMode::Place(false, 8) =>st.p2_mode = PlayMode::Move(false),
-                        PlayMode::Place(false, n) =>st.p2_mode = PlayMode::Place(false, n+1),
+                        PlayMode::Place(8) =>st.p2_mode = PlayMode::Move,
+                        PlayMode::Place(n) =>st.p2_mode = PlayMode::Place(n+1),
                         _ => {}
                     }   
                 }
@@ -541,6 +535,95 @@ pub mod base{
             println!("{}", z);
             return x+y+z+r;
         }
+
+
+        // Die angegegbenen Felder sind so, wie sie im Array stehen
+        pub fn ki_mov(&self, from: (i8,i8,i8), to: (i8,i8,i8))->State{
+            //* Gibt wenn möglich einen State nach einem move-Zug aus 
+            //TODO testen ob gewonnen
+            let mut st = self.clone();
+            //moven:
+            st.change( (from.0,from.1, 0) );
+            st.change( (to.0,to.1,st.turn) );
+            
+            //Falls sich der gegner nicht mehr bewegen kann, hat man gewonnen
+            if 0 == self.movable(st.turn*-1){
+                if st.turn == 1{
+                    st.p1_mode = PlayMode::Won;
+                }else{   
+                    st.p2_mode = PlayMode::Won;
+                }
+            }
+
+            //falls Mühle entstanden ist den "besten"Stein schlagen
+            if st.spot_muehle((to.0,to.1,st.turn))>0{
+                let field = st.steineSchlagen();   
+                st.change((field.0,field.1, 0))
+            }
+            
+            st.turn *= -1;
+
+            return st;
+        }
+
+
+        //Bekommt das zu verändernde Feld eingegeben, Man gewinnt aktuell leider noch nicht, wenn man nach dem letzten place den Gegner eingeschlossen hat
+        pub fn ki_place(&self, field:(i8,i8,i8))->State{ 
+            let mut st = self.clone();
+
+            st.change( (field.0,field.1,st.turn) );
+
+            //Falls Mühle gelegt wurde
+            if st.spot_muehle((field.0,field.1,st.turn))>0{
+                let fd = st.steineSchlagen();
+                st.change((fd.0, fd.1, 0));
+            }
+            
+            //Wen 8 Steine gesetzt worden sind, in den Move-Zustand wechseln, sonst den Steine-Counter erhöhen
+            if st.turn == 1{
+                match st.p1_mode {
+                    PlayMode::Place(8) => st.p1_mode = PlayMode::Move,
+                    PlayMode::Place(n) =>st.p1_mode = PlayMode::Place(n+1),
+                    _ => {}
+                }   
+            }else{
+                match st.p2_mode {
+                    PlayMode::Place(8) =>st.p2_mode = PlayMode::Move,
+                    PlayMode::Place( n) =>st.p2_mode = PlayMode::Place(n+1),
+                    _ => {}
+                }   
+            }
+
+            //Zug beenden
+            st.turn *= -1;
+            
+            return st;
+        
+        }
+
+        pub fn steineSchlagen(&self)->(i8,i8,i8){
+            let mut bestStone : (i8,i8,i8) = (0,0,0);
+            let mut bestStoneValue : i8 = 0;
+            for field in &self.board {
+                let mut stoneValue : i8 = 1;
+                if  field.2 == 0 || field.2 == self.turn || self.spot_muehle(*field)>0 {
+                    continue;
+                }
+                if self.spot_pot_muehle(*field)>0 {
+                    stoneValue = stoneValue + self.spot_pot_muehle(*field);
+                }
+                if stoneValue > bestStoneValue {
+                    bestStone = *field;
+                    bestStoneValue = stoneValue;
+                }
+            }
+            // Nicht unbedingt sehr intelligent fehlt mindestens noch sowas wie nicht bewegliche Steine
+            // guckt nur ob teil einer potenziellen mühle bzw ob er überhaupt geschlagen werden darf
+            println!("hello {}",bestStoneValue);
+            return bestStone;
+        }
+
+
 
         
     }
