@@ -4,11 +4,10 @@ use ggez::event::{self, MouseButton};
 use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::conf;
-use base::base::State;
 use crate::action::action::start as strt;
 use std::time::{Duration,SystemTime};
 mod base;   
-use super::base::base::State;
+use base::base::State;
 mod action;
 use action::action as act;
 
@@ -241,6 +240,13 @@ pub fn start() -> ggez::GameResult {
 
 
 }
+
+
+
+
+
+
+
 
 
 fn mov_test(mut fd:State)->State{
