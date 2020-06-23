@@ -87,6 +87,45 @@ pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (f32,f32, i8) {
     
 }
 
+pub fn coordsToField(fd:(f32,f32,i8))-> (i8,i8, i8) {
+    match fd {
+        (90.0..=110.0, 490.0..=510.0, x) => return (1,1,x),
+        (90.0..=110.0, 290.0..=310.0, x) => return (1,4,x),
+        (90.0..=110.0, 90.0..=110.0, x) => return (1,7,x),
+
+        (165.0..=185.0, 415.0..=435.0, x) => return (2,2,x),
+        (165.0..=185.0, 290.0..=310.0, x) => return (2,4,x),
+        (165.0..=185.0, 165.0..=185.0, x) => return (2,6,x),
+
+        (240.0..=260.0, 340.0..=360.0, x) => return (3,3,x),
+        (240.0..=260.0, 290.0..=310.0, x) => return (3,4,x),
+        (240.0..=260.0, 240.0..=260.0, x) => return (3,5,x),
+
+        (290.0..=310.0, 490.0..=510.0, x) => return (4,1,x),
+        (290.0..=310.0, 415.0..=435.0, x) => return (4,2,x),
+        (290.0..=310.0, 340.0..=360.0, x) => return (4,3,x),
+
+        (290.0..=310.0, 240.0..=260.0, x) => return (4,5,x),
+        (290.0..=310.0, 165.0..=185.0, x) => return (4,6,x),
+        (290.0..=310.0, 90.0..=110.0, x) => return (4,7,x),
+        (340.0..=360.0, 340.0..=360.0, x) => return (5,3,x),
+        (340.0..=360.0, 290.0..=310.0, x) => return (5,4,x),
+        (340.0..=360.0, 240.0..=260.0, x) => return (5,5,x),
+
+        (415.0..=435.0, 415.0..=435.0, x) => return (6,2,x),
+        (415.0..=435.0, 290.0..=310.0, x) => return (6,4,x),
+        (415.0..=435.0, 165.0..=185.0, x) => return (6,6,x),
+
+        (490.0..=510.0, 490.0..=510.0, x) => return (7,1,x),
+        (490.0..=510.0, 290.0..=310.0, x) => return (7,4,x),
+        (490.0..=510.0, 90.0..=110.0, x) => return (7,7,x),
+
+        _ => return (-1,-1,-1)
+    }
+
+
+}
+
 
 
 impl event::EventHandler for MainState {
@@ -231,12 +270,14 @@ impl event::EventHandler for MainState {
 
     fn mouse_button_down_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
         self.mouse_down = true;
-        println!("Mouse button pressed: {:?}, x: {}, y: {}", button, x, y);
+        println!("Mouse button pressed");
+        println!("{:?}", coordsToField((x,y,0)));
     }
 
     fn mouse_button_up_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
         self.mouse_down = false;
-        println!("Mouse button released: {:?}, x: {}, y: {}", button, x, y);
+        println!("Mouse button released");
+        println!("{:?}", coordsToField((x,y,0)));
     }
 
 }
