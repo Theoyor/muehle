@@ -35,53 +35,53 @@ pub fn main() {
 
 struct MainState {
     mouse_down: bool,
-    
+    realState: State,
 }
 
 impl MainState {
     fn new() -> ggez::GameResult<MainState> {
         let s = MainState {
             mouse_down: false,
-            
+            realState: State::new(),
         };
         Ok(s)
     }
 }
 
-pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (i16,i16, i8) {
+pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (f32,f32, i8) {
     match fd {
-        (1, 1, x) => return (100,500,x),
-        (1, 4, x) => return (100,300,x),
-        (1, 7, x) => return (100,100,x),
+        (1, 1, x) => return (100.0,500.0,x),
+        (1, 4, x) => return (100.0,300.0,x),
+        (1, 7, x) => return (100.0,100.0,x),
 
-        (2, 2, x) => return (175,425,x),
-        (2, 4, x) => return (175,300,x),
-        (2, 6, x) => return (175,175,x),
+        (2, 2, x) => return (175.0,425.0,x),
+        (2, 4, x) => return (175.0,300.0,x),
+        (2, 6, x) => return (175.0,175.0,x),
 
-        (3, 3, x) => return (250,350,x),
-        (3, 4, x) => return (250,300,x),
-        (3, 5, x) => return (250,250,x),
+        (3, 3, x) => return (250.0,350.0,x),
+        (3, 4, x) => return (250.0,300.0,x),
+        (3, 5, x) => return (250.0,250.0,x),
 
-        (4, 1, x) => return (300, 500,x),
-        (4, 2, x) => return (300, 425,x),
-        (4, 3, x) => return (300, 350,x),
+        (4, 1, x) => return (300.0,500.0,x),
+        (4, 2, x) => return (300.0,425.0,x),
+        (4, 3, x) => return (300.0,350.0,x),
 
-        (4, 5, x) => return (300, 250,x),
-        (4, 6, x) => return (300, 175,x),
-        (4, 7, x) => return (300, 100,x),
-        (5, 3, x) => return (350,350,x),
-        (5, 4, x) => return (350,300,x),
-        (5, 5, x) => return (350,250,x),
+        (4, 5, x) => return (300.0,250.0,x),
+        (4, 6, x) => return (300.0,175.0,x),
+        (4, 7, x) => return (300.0,100.0,x),
+        (5, 3, x) => return (350.0,350.0,x),
+        (5, 4, x) => return (350.0,300.0,x),
+        (5, 5, x) => return (350.0,250.0,x),
 
-        (6, 2, x) => return (425,425,x),
-        (6, 4, x) => return (425,300,x),
-        (6, 6, x) => return (425,175,x),
+        (6, 2, x) => return (425.0,425.0,x),
+        (6, 4, x) => return (425.0,300.0,x),
+        (6, 6, x) => return (425.0,175.0,x),
 
-        (7, 1, x) => return (500,500,x),
-        (7, 4, x) => return (500,300,x),
-        (7, 7, x) => return (500,100,x),
+        (7, 1, x) => return (500.0,500.0,x),
+        (7, 4, x) => return (500.0,300.0,x),
+        (7, 7, x) => return (500.0,100.0,x),
                 
-        _ => return (-1,-1,-1)
+        _ => return (-1.0,-1.0,-1)
     }
 
     
@@ -98,7 +98,7 @@ impl event::EventHandler for MainState {
         Ok(())
     }
 
-    fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
+    fn draw(&mut self ,ctx: &mut ggez::Context) -> ggez::GameResult {
         graphics::clear(ctx, [51.0, 118.0, 29.0, 1.0].into());
     
 
@@ -194,8 +194,20 @@ impl event::EventHandler for MainState {
         
         //Spielsteine:
 
-        for pos in main::fd {
+        for pos in &self.realState.board {
             
+            let mut steinkoordinaten = fieldToCoordinates(*pos);
+
+            if steinkoordinaten.2 == (-1) {
+                let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::fill(), na::Point2::new(steinkoordinaten.0, steinkoordinaten.1), 14.0, 0.1, graphics::BLACK).unwrap();
+                graphics::draw(ctx, &spielstein, (na::Point2::new(0.0, 0.0),))?;
+            }
+            else if steinkoordinaten.2 == (1) {
+                let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::stroke(4.0), na::Point2::new(steinkoordinaten.0, steinkoordinaten.1), 14.0, 0.1, graphics::BLACK).unwrap();
+                graphics::draw(ctx, &spielstein, (na::Point2::new(0.0, 0.0),))?;
+            }
+            
+
         }
 
         /*let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::fill(), na::Point2::new(100.0, 100.0), 14.0, 0.1, graphics::BLACK).unwrap();
