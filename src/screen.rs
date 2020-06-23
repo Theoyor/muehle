@@ -5,11 +5,37 @@ use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::conf;
 use super::base::base::State;
+use crate::action::action::start as strt;
+use std::time::{Duration,SystemTime};
+mod base;   
+use base::base::State;
+mod action;
+use action::action as act;
+
+
+pub fn main() {
+    let sys_time = SystemTime::now();
+    let mut fd = State::new();
+    
+    fd = place_tst(fd);
+    fd = mov_test(fd);
+    let i = fd.spot_pot_muehle((4,2,1));
+    println!("{}", i);
+    println!("{:?}", fd);
+    fd.spielstandbewertung();
+    //println!("{:?}",fd.steineSchlagen());
+    start();
+    let tup = strt(6,fd);
+    println!("Bewertung: {}",tup.0);
+    println!("{:?}", tup.1);
+
+    let difference = sys_time.elapsed();
+    println!("{:?}", difference);
+}
 
 
 struct MainState {
     mouse_down: bool,
-    pos_x: f32,
     
 }
 
@@ -17,47 +43,46 @@ impl MainState {
     fn new() -> ggez::GameResult<MainState> {
         let s = MainState {
             mouse_down: false,
-            pos_x: 0.0
+            
         };
         Ok(s)
     }
 }
 
-pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (i16,i16) {
+pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (i16,i16, i8) {
     match fd {
-        (1, 1, 0) => return (100,500),
-        (1, 4, 0) => return (100,300),
-        (1, 7, 0) => return (100,100),
+        (1, 1, x) => return (100,500,x),
+        (1, 4, x) => return (100,300,x),
+        (1, 7, x) => return (100,100,x),
 
-        (2, 2, 0) => return (175,425),
-        (2, 4, 0) => return (175,300),
-        (2, 6, 0) => return (175,175),
+        (2, 2, x) => return (175,425,x),
+        (2, 4, x) => return (175,300,x),
+        (2, 6, x) => return (175,175,x),
 
-        (3, 3, 0) => return (250,350),
-        (3, 4, 0) => return (250,300),
-        (3, 5, 0) => return (250,250),
+        (3, 3, x) => return (250,350,x),
+        (3, 4, x) => return (250,300,x),
+        (3, 5, x) => return (250,250,x),
 
-        (4, 1, 0) => return (300, 500),
-        (4, 2, 0) => return (300, 425),
-        (4, 3, 0) => return (300, 350),
+        (4, 1, x) => return (300, 500,x),
+        (4, 2, x) => return (300, 425,x),
+        (4, 3, x) => return (300, 350,x),
 
-        (4, 5, 0) => return (300, 250),
-        (4, 6, 0) => return (300, 175),
-        (4, 7, 0) => return (300, 100),
+        (4, 5, x) => return (300, 250,x),
+        (4, 6, x) => return (300, 175,x),
+        (4, 7, x) => return (300, 100,x),
+        (5, 3, x) => return (350,350,x),
+        (5, 4, x) => return (350,300,x),
+        (5, 5, x) => return (350,250,x),
 
-        (5, 3, 0) => return (350,350),
-        (5, 4, 0) => return (350,300),
-        (5, 5, 0) => return (350,250),
+        (6, 2, x) => return (425,425,x),
+        (6, 4, x) => return (425,300,x),
+        (6, 6, x) => return (425,175,x),
 
-        (6, 2, 0) => return (425,425),
-        (6, 4, 0) => return (425,300),
-        (6, 6, 0) => return (425,175),
-
-        (7, 1, 0) => return (500,500),
-        (7, 4, 0) => return (500,300),
-        (7, 7, 0) => return (500,100),
+        (7, 1, x) => return (500,500,x),
+        (7, 4, x) => return (500,300,x),
+        (7, 7, x) => return (500,100,x),
                 
-        _ => return (-1,-1)
+        _ => return (-1,-1,-1)
     }
 
     
@@ -67,6 +92,9 @@ pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (i16,i16) {
 
 impl event::EventHandler for MainState {
     fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
+
+    
+
 
         Ok(())
     }
@@ -167,13 +195,23 @@ impl event::EventHandler for MainState {
         
         //Spielsteine:
 
-        let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::fill(), na::Point2::new(100.0, 100.0), 14.0, 0.1, graphics::BLACK).unwrap();
+
+        /*let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::fill(), na::Point2::new(100.0, 100.0), 14.0, 0.1, graphics::BLACK).unwrap();
         graphics::draw(ctx, &spielstein, (na::Point2::new(0.0, 0.0),))?;
 
 
+        fn drawspielstein( fd:(i8,i8,i8)) {
+            if fd.2 == 1 {
+                let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::fill(), na::Point2::new(100.0, 100.0), 14.0, 0.1, graphics::BLACK).unwrap();
+            }
+
+        }
+        */
         graphics::present(ctx)?;
         Ok(())
     }
+    
+
 
     
 
@@ -199,4 +237,7 @@ pub fn start() -> ggez::GameResult {
     let (ctx, event_loop) = &mut cb.build()?;
     let state = &mut MainState::new()?;
      event::run(ctx, event_loop, state)
+
+
+
 }
