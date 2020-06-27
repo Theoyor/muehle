@@ -36,13 +36,22 @@ pub fn main() {
 struct MainState {
     mouse_down: bool,
     realState: State,
+    realInput: PlayerInput,
 }
+
+#[derive(Clone)]
+struct PlayerInput {
+    down: usize,
+    up: usize,
+}
+
 
 impl MainState {
     fn new() -> ggez::GameResult<MainState> {
         let s = MainState {
             mouse_down: false,
             realState: State::new(),
+            realInput: PlayerInput{down:24, up:24},
         };
         Ok(s)
     }
@@ -87,40 +96,41 @@ pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (f32,f32, i8) {
     
 }
 
-pub fn coordsToField(fd:(f32,f32,i8))-> (i8,i8, i8) {
+pub fn coordsToIndex(fd:(f32,f32))-> usize {
     match fd {
-        (90.0..=110.0, 490.0..=510.0, x) => return (1,1,x),
-        (90.0..=110.0, 290.0..=310.0, x) => return (1,4,x),
-        (90.0..=110.0, 90.0..=110.0, x) => return (1,7,x),
+        (90.0..=110.0, 490.0..=510.0) => return 0,
+        (90.0..=110.0, 290.0..=310.0) => return 1,
+        (90.0..=110.0, 90.0..=110.0) => return 2,
 
-        (165.0..=185.0, 415.0..=435.0, x) => return (2,2,x),
-        (165.0..=185.0, 290.0..=310.0, x) => return (2,4,x),
-        (165.0..=185.0, 165.0..=185.0, x) => return (2,6,x),
+        (165.0..=185.0, 415.0..=435.0) => return 3,
+        (165.0..=185.0, 290.0..=310.0) => return 4,
+        (165.0..=185.0, 165.0..=185.0) => return 5,
 
-        (240.0..=260.0, 340.0..=360.0, x) => return (3,3,x),
-        (240.0..=260.0, 290.0..=310.0, x) => return (3,4,x),
-        (240.0..=260.0, 240.0..=260.0, x) => return (3,5,x),
+        (240.0..=260.0, 340.0..=360.0) => return 6,
+        (240.0..=260.0, 290.0..=310.0) => return 7,
+        (240.0..=260.0, 240.0..=260.0) => return 8,
 
-        (290.0..=310.0, 490.0..=510.0, x) => return (4,1,x),
-        (290.0..=310.0, 415.0..=435.0, x) => return (4,2,x),
-        (290.0..=310.0, 340.0..=360.0, x) => return (4,3,x),
+        (290.0..=310.0, 490.0..=510.0) => return 9,
+        (290.0..=310.0, 415.0..=435.0) => return 10,
+        (290.0..=310.0, 340.0..=360.0) => return 11,
 
-        (290.0..=310.0, 240.0..=260.0, x) => return (4,5,x),
-        (290.0..=310.0, 165.0..=185.0, x) => return (4,6,x),
-        (290.0..=310.0, 90.0..=110.0, x) => return (4,7,x),
-        (340.0..=360.0, 340.0..=360.0, x) => return (5,3,x),
-        (340.0..=360.0, 290.0..=310.0, x) => return (5,4,x),
-        (340.0..=360.0, 240.0..=260.0, x) => return (5,5,x),
+        (290.0..=310.0, 240.0..=260.0) => return 12,
+        (290.0..=310.0, 165.0..=185.0) => return 13,
+        (290.0..=310.0, 90.0..=110.0) => return 14,
 
-        (415.0..=435.0, 415.0..=435.0, x) => return (6,2,x),
-        (415.0..=435.0, 290.0..=310.0, x) => return (6,4,x),
-        (415.0..=435.0, 165.0..=185.0, x) => return (6,6,x),
+        (340.0..=360.0, 340.0..=360.0) => return 15,
+        (340.0..=360.0, 290.0..=310.0) => return 16,
+        (340.0..=360.0, 240.0..=260.0) => return 17,
 
-        (490.0..=510.0, 490.0..=510.0, x) => return (7,1,x),
-        (490.0..=510.0, 290.0..=310.0, x) => return (7,4,x),
-        (490.0..=510.0, 90.0..=110.0, x) => return (7,7,x),
+        (415.0..=435.0, 415.0..=435.0) => return 18,
+        (415.0..=435.0, 290.0..=310.0) => return 19,
+        (415.0..=435.0, 165.0..=185.0) => return 20,
 
-        _ => return (-1,-1,-1)
+        (490.0..=510.0, 490.0..=510.0) => return 21,
+        (490.0..=510.0, 290.0..=310.0) => return 22,
+        (490.0..=510.0, 90.0..=110.0) => return 23,
+
+        _ => return 24
     }
 
 
@@ -271,18 +281,42 @@ impl event::EventHandler for MainState {
     fn mouse_button_down_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
         self.mouse_down = true;
         println!("Mouse button pressed");
-        println!("{:?}", coordsToField((x,y,0)));
+        println!("{:?}", coordsToIndex((x,y)));
+        self.realInput.down=coordsToIndex((x,y));
+
     }
 
     fn mouse_button_up_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
         self.mouse_down = false;
         println!("Mouse button released");
-        println!("{:?}", coordsToField((x,y,0)));
+        println!("{:?}", coordsToIndex((x,y)));
+        self.realInput.up=coordsToIndex((x,y));
+        self.realState = apply_input(self.realInput.clone(), self.realState.clone());
     }
 
 }
 
+fn apply_input(realInput: PlayerInput, mut realState: State) -> State {
+    if realInput.up == 24 || realInput.down == 24 || realState.turn != 1 {
+        println!("Did nothing");
+    } else {
+        let up: (i8,i8,i8) = realState.board[realInput.up];
+        let down: (i8,i8,i8) = realState.board[realInput.down];
+        if realState.allowed==true && up == down{
+            if State::remove_control(&realState, up)==Ok(true){
+                println!("removing");
+                match State::remove(&realState, up){
+                    Ok(t) => realState=t,
+                    Err(v)=> println!("{:?}", v),
+                }
 
+            }
+        }
+        println!("{:?}", realState.board[realInput.down] );
+        println!("applied");
+    }
+    return realState;
+}
 
 pub fn start() -> ggez::GameResult { 
     let cb = ggez::ContextBuilder::new("Muehle", "Rust-Atzen")
