@@ -10,6 +10,7 @@ mod base;
 use base::base::State;
 mod action;
 use action::action as act;
+use crate::base::base::PlayMode::{Place, Move, Jump};
 
 
 pub fn main() {
@@ -312,7 +313,24 @@ fn apply_input(realInput: PlayerInput, mut realState: State) -> State {
 
             }
         }
-        println!("{:?}", realState.board[realInput.down] );
+        else{
+
+            if realState.p1_mode==Place(0) && up == down{
+                println!("placing");
+                match State::place(&realState, down){
+                    Ok(t) => realState=t,
+                    Err(v)=> println!("{:?}", v),
+                }
+            }
+            else if (realState.p1_mode==Move || realState.p1_mode==Jump ) && State::move_control(&realState, down, up)==Ok(true){
+                println!("moving");
+                match State::mov(&realState, down, up){
+                    Ok(t) => realState=t,
+                    Err(v)=> println!("{:?}", v),
+                }
+
+            }
+        }
         println!("applied");
     }
     return realState;
