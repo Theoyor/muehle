@@ -17,6 +17,8 @@ pub fn main() {
     let sys_time = SystemTime::now();
     let mut fd = State::new();
 
+
+
     fd = place_tst(fd);
     fd = mov_test(fd);
     let i = fd.spot_pot_muehle((4,2,1));
@@ -38,6 +40,7 @@ struct MainState {
     mouse_down: bool,
     realState: State,
     realInput: PlayerInput,
+    waitTicks: u8,
 }
 
 #[derive(Clone)]
@@ -47,16 +50,20 @@ struct PlayerInput {
 }
 
 
+
 impl MainState {
     fn new() -> ggez::GameResult<MainState> {
         let s = MainState {
             mouse_down: false,
             realState: State::new(),
             realInput: PlayerInput{down:24, up:24},
+            waitTicks: 0,
         };
         Ok(s)
     }
 }
+
+
 
 pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (f32,f32, i8) {
     match fd {
@@ -140,13 +147,7 @@ pub fn coordsToIndex(fd:(f32,f32))-> usize {
 
 
 impl event::EventHandler for MainState {
-    fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
 
-    
-
-
-        Ok(())
-    }
 
     fn draw(&mut self ,ctx: &mut ggez::Context) -> ggez::GameResult {
         graphics::clear(ctx, [51.0, 118.0, 29.0, 1.0].into());
@@ -263,8 +264,23 @@ impl event::EventHandler for MainState {
         graphics::present(ctx)?;
         Ok(())
     }
-    
 
+    fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
+
+        if self.realState.turn == -1 {
+            if self.waitTicks == 0{
+                self.realState = act::start(5,self.realState.clone()).1;
+            }
+            else{
+                self.waitTicks -= 1;
+            }
+
+        }
+
+
+
+        Ok(())
+    }
 
     
 
@@ -282,8 +298,8 @@ impl event::EventHandler for MainState {
         println!("{:?}", coordsToIndex((x,y)));
         self.realInput.up=coordsToIndex((x,y));
         self.realState = apply_input(self.realInput.clone(), self.realState.clone());
-        if(self.realState.turn == 2){
-            self.realState = act::start(6,self.realState.clone()).1;
+        if self.realState.turn == -1 {
+            self.waitTicks = 2;
         }
     }
 
