@@ -15,21 +15,20 @@ use crate::base::base::PlayMode::{Place, Move, Jump};
 
 pub fn main() {
     let sys_time = SystemTime::now();
-    let mut fd = State::new();
+    //let mut fd = State::new();
 
-
-
-    fd = place_tst(fd);
-    fd = mov_test(fd);
-    let i = fd.spot_pot_muehle((4,2,1));
-    println!("{}", i);
-    println!("{:?}", fd);
-    fd.spielstandbewertung();
+    //fd = place_tst(fd);
+    //fd = mov_test(fd);
+    //let i = fd.spot_pot_muehle((4,2,1));
+    //println!("{}", i);
+    //println!("{:?}", fd);
+    //fd.spielstandbewertung();
     //println!("{:?}",fd.steineSchlagen());
     start();
-    let tup = strt(6,fd);
-    println!("Bewertung: {}",tup.0);
-    println!("{:?}", tup.1);
+
+    //let tup = strt(6,fd);
+    //println!("Bewertung: {}",tup.0);
+    //println!("{:?}", tup.1);
 
     let difference = sys_time.elapsed();
     println!("{:?}", difference);
@@ -55,15 +54,13 @@ impl MainState {
     fn new() -> ggez::GameResult<MainState> {
         let s = MainState {
             mouse_down: false,
-            realState: State::new(),
+            realState:place_tst(State::new()),
             realInput: PlayerInput{down:24, up:24},
             waitTicks: 0,
         };
         Ok(s)
     }
 }
-
-
 
 pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (f32,f32, i8) {
     match fd {
