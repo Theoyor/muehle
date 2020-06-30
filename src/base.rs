@@ -575,7 +575,7 @@ pub mod base{
             if st.turn == 1{
 
                 //Schauen ob p2 in einen anderen Zustand muss
-                st.p2_stones -= 1;
+                //st.p2_stones -= 1;
                 if st.p2_stones == 3{
                     st.p2_mode = PlayMode::Jump;
                 }else if st.p2_stones < 3{
@@ -585,7 +585,7 @@ pub mod base{
             if st.turn == -1{
                 
                 //schauen ob p1 in einen anderen Zustand muss
-                st.p1_stones -= 1;
+                //st.p1_stones -= 1;
                 if st.p1_stones == 3{
                     st.p1_mode = PlayMode::Jump;
                 }else if st.p1_stones < 3{
