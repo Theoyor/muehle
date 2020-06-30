@@ -314,8 +314,8 @@ fn apply_input(realInput: PlayerInput, mut realState: State, players: u8) -> Sta
     } else {
         let up: (i8,i8,i8) = realState.board[realInput.up];
         let down: (i8,i8,i8) = realState.board[realInput.down];
-        if realState.allowed==true && up == down{
-            if State::remove_control(&realState, up)==Ok(true){
+        if realState.allowed==true{
+            if State::remove_control(&realState, up)==Ok(true)  && up == down{
                 println!("removing");
                 match State::remove(&realState, up){
                     Ok(t) => realState=t,
