@@ -271,7 +271,6 @@ impl event::EventHandler for MainState {
             else{
                 self.waitTicks -= 1;
             }
-
         }
 
 
