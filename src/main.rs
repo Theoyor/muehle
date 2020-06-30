@@ -11,6 +11,7 @@ use base::base::State;
 mod action;
 use action::action as act;
 use crate::base::base::PlayMode::{Place, Move, Jump};
+use crate::base::base::PlayMode;
 
 
 pub fn main() {
@@ -269,7 +270,7 @@ impl event::EventHandler for MainState {
 
     fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
 
-        if self.realState.turn == -1 {
+        if self.realState.turn == -1 && self.players==1{
             if self.waitTicks == 0{
                 self.realState = act::start(5,self.realState.clone()).1;
             }
@@ -298,8 +299,8 @@ impl event::EventHandler for MainState {
         println!("Mouse button released");
         println!("{:?}", coordsToIndex((x,y)));
         self.realInput.up=coordsToIndex((x,y));
-        self.realState = apply_input(self.realInput.clone(), self.realState.clone());
-        if self.realState.turn == -1 {
+        self.realState = apply_input(self.realInput.clone(), self.realState.clone(), self.players.clone());
+        if self.realState.turn == -1 && self.players==1{
             self.waitTicks = 2;
         }
         println!("P1-Stones:{},P2-Stones:{} \n",self.realState.p1_stones,self.realState.p2_stones,);
@@ -307,8 +308,8 @@ impl event::EventHandler for MainState {
 
 }
 
-fn apply_input(realInput: PlayerInput, mut realState: State) -> State {
-    if realInput.up == 24 || realInput.down == 24 || realState.turn != 1 {
+fn apply_input(realInput: PlayerInput, mut realState: State, players: u8) -> State {
+    if realInput.up == 24 || realInput.down == 24 || players==1 && realState.turn== -1{
         println!("Did nothing");
     } else {
         let up: (i8,i8,i8) = realState.board[realInput.up];
@@ -324,30 +325,57 @@ fn apply_input(realInput: PlayerInput, mut realState: State) -> State {
             }
         }
         else{
-
-            match realState.p1_mode{
-                Place(_)=>{
-                    if up == down {
-                        println!("placing");
-                        match State::place(&realState, down){
-                            Ok(t) => realState=t,
-                            Err(v)=> println!("{:?}", v),
+            if players==2 && realState.turn==-1{
+                match realState.p2_mode{
+                    Place(_)=>{
+                        if up == down {
+                            println!("placing");
+                            match State::place(&realState, down){
+                                Ok(t) => realState=t,
+                                Err(v)=> println!("{:?}", v),
+                            }
                         }
                     }
-                }
-                Move | Jump=>{
-                    if State::move_control(&realState, down, up)==Ok(true){
-                        println!("moving");
-                        match State::mov(&realState, down, up){
-                            Ok(t) => realState=t,
-                            Err(v)=> println!("{:?}", v),
+                    Move | Jump=>{
+                        if State::move_control(&realState, down, up)==Ok(true){
+                            println!("moving");
+                            match State::mov(&realState, down, up){
+                                Ok(t) => realState=t,
+                                Err(v)=> println!("{:?}", v),
+                            }
                         }
                     }
-                }
-                _=>{
+                    _=>{
+
+                    }
 
                 }
+            }
+            else{
+                match realState.p1_mode{
+                    Place(_)=>{
+                        if up == down {
+                            println!("placing");
+                            match State::place(&realState, down){
+                                Ok(t) => realState=t,
+                                Err(v)=> println!("{:?}", v),
+                            }
+                        }
+                    }
+                    Move | Jump=>{
+                        if State::move_control(&realState, down, up)==Ok(true){
+                            println!("moving");
+                            match State::mov(&realState, down, up){
+                                Ok(t) => realState=t,
+                                Err(v)=> println!("{:?}", v),
+                            }
+                        }
+                    }
+                    _=>{
 
+                    }
+
+                }
             }
         }
         println!("applied");
