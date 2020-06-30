@@ -40,6 +40,7 @@ struct MainState {
     realState: State,
     realInput: PlayerInput,
     waitTicks: u8,
+    players: u8,
 }
 
 #[derive(Clone)]
@@ -57,6 +58,7 @@ impl MainState {
             realState:place_tst(State::new()),
             realInput: PlayerInput{down:24, up:24},
             waitTicks: 0,
+            players: 2,
         };
         Ok(s)
     }
