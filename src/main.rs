@@ -253,6 +253,9 @@ impl event::EventHandler for MainState {
             else if steinkoordinaten.2 == (1) {
                 let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::stroke(4.0), na::Point2::new(steinkoordinaten.0, steinkoordinaten.1), 18.0, 0.1, graphics::BLACK).unwrap();
                 graphics::draw(ctx, &spielstein, (na::Point2::new(0.0, 0.0),))?;
+                
+                let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::stroke(4.0), na::Point2::new(steinkoordinaten.0, steinkoordinaten.1), 14.0, 0.1, graphics::WHITE).unwrap();
+                graphics::draw(ctx, &spielstein, (na::Point2::new(0.0, 0.0),))?;
             }
             
 
