@@ -303,6 +303,7 @@ fn apply_input(realInput: PlayerInput, mut realState: State) -> State {
             }
         }
         else{
+
             match realState.p1_mode{
                 Place(_)=>{
                     if up == down {
