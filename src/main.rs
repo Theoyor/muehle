@@ -59,7 +59,7 @@ impl MainState {
             realState:place_tst(State::new()),
             realInput: PlayerInput{down:24, up:24},
             waitTicks: 0,
-            players: 2,
+            players: 1,
         };
         Ok(s)
     }
@@ -331,7 +331,7 @@ fn apply_input(realInput: PlayerInput, mut realState: State, players: u8) -> Sta
             if players==2 && realState.turn==-1{
                 match realState.p2_mode{
                     Place(_)=>{
-                        if up == down {
+                        if up == down && State::place_control(&realState, down)==Ok(true){
                             println!("placing");
                             match State::place(&realState, down){
                                 Ok(t) => realState=t,
@@ -357,7 +357,7 @@ fn apply_input(realInput: PlayerInput, mut realState: State, players: u8) -> Sta
             else{
                 match realState.p1_mode{
                     Place(_)=>{
-                        if up == down {
+                        if up == down && State::place_control(&realState, down)==Ok(true){
                             println!("placing");
                             match State::place(&realState, down){
                                 Ok(t) => realState=t,
@@ -405,7 +405,7 @@ pub fn start() -> ggez::GameResult {
 
 
 
-
+/*
 
 fn mov_test(mut fd:State)->State{
     fd = fd.mov((4,2,1), (4,1,0)).unwrap();
@@ -416,6 +416,7 @@ fn mov_test(mut fd:State)->State{
     return fd;
 }
 
+*/
 
 fn place_tst(mut fd:State)->State{
     fd = fd.place((4,2,0)).unwrap();
