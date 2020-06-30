@@ -300,6 +300,7 @@ impl event::EventHandler for MainState {
         if self.realState.turn == -1 {
             self.waitTicks = 2;
         }
+        println!("P1-Stones:{},P2-Stones:{} \n",self.realState.p1_stones,self.realState.p2_stones,);
     }
 
 }

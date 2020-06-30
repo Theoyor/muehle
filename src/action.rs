@@ -35,7 +35,7 @@ pub mod action{
                             }else if c == (0,0,0){
                                 c = *field;
                             }else{
-                                print!("1 Error Jump in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)
+                                print!("1 Error Jump in Start depth: {}, P1-Stones:{},P2-Stones:{} \n",depth,state.p1_stones,state.p2_stones)
                             }
                         }
                     }
@@ -91,7 +91,7 @@ pub mod action{
                       }  
                     }
                 },
-                _=>{print!("2 Error Max in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)}
+                _=>{print!("2 Error Max in Start depth: {}, P1-Stones:{},P2-Stones:{} \n",depth,state.p1_stones,state.p2_stones)}
                     
             }
 
@@ -117,7 +117,7 @@ pub mod action{
                             }else if c == (0,0,0){
                                 c = *field;
                             }else{
-                                print!("3 Error Jump in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)
+                                print!("3 Error Jump in Start depth: {}, P1-Stones:{},P2-Stones:{} \n",depth,state.p1_stones,state.p2_stones)
                             }
                         }
                     }
@@ -168,7 +168,7 @@ pub mod action{
                         }  
                     }
                 },
-                _=>{print!("4 Error Min in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)}
+                _=>{print!("4 Error Min in Start depth: {}, P1-Stones:{},P2-Stones:{} \n",depth,state.p1_stones,state.p2_stones)}
                     
             }
 
@@ -211,7 +211,7 @@ pub mod action{
                             }else if c == (0,0,0){
                                 c = *field;
                             }else{
-                                print!("5 Error Jump in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)
+                                print!("5 Error Jump in Start depth: {}, P1-Stones:{},P2-Stones:{} \n",depth,state.p1_stones,state.p2_stones)
                             }
                         }
                     }
@@ -263,7 +263,7 @@ pub mod action{
                       }  
                     }
                 },
-                _=>{print!("6 Error Max in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)}
+                _=>{print!("6 Error Max in Start depth: {}, P1-Stones:{},P2-Stones:{} \n",depth,state.p1_stones,state.p2_stones)}
                     
             }
 
@@ -288,7 +288,7 @@ pub mod action{
                             }else if c == (0,0,0){
                                 c = *field;
                             }else{
-                                print!("7 Error Jump in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)
+                                print!("7 Error Jump in Start depth: {}, P1-Stones:{},P2-Stones:{} \n",depth,state.p1_stones,state.p2_stones)
                             }
                         }
                     }
@@ -334,7 +334,7 @@ pub mod action{
                         }  
                     }
                 },
-                _=>{print!("8 Error Jump in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)}
+                _=>{print!("8 Error Jump in Start depth: {}, P1-Stones:{},P2-Stones:{} \n",depth,state.p1_stones,state.p2_stones)}
                     
             }
 
