@@ -16,7 +16,7 @@ use crate::base::base::PlayMode::{Place, Move, Jump};
 pub fn main() {
     let sys_time = SystemTime::now();
     let mut fd = State::new();
-    
+
     fd = place_tst(fd);
     fd = mov_test(fd);
     let i = fd.spot_pot_muehle((4,2,1));
@@ -314,19 +314,27 @@ fn apply_input(realInput: PlayerInput, mut realState: State) -> State {
             }
         }
         else{
-
-            if realState.p1_mode==Place(0) && up == down{
-                println!("placing");
-                match State::place(&realState, down){
-                    Ok(t) => realState=t,
-                    Err(v)=> println!("{:?}", v),
+            match realState.p1_mode{
+                Place(_)=>{
+                    if up == down {
+                        println!("placing");
+                        match State::place(&realState, down){
+                            Ok(t) => realState=t,
+                            Err(v)=> println!("{:?}", v),
+                        }
+                    }
                 }
-            }
-            else if (realState.p1_mode==Move || realState.p1_mode==Jump ) && State::move_control(&realState, down, up)==Ok(true){
-                println!("moving");
-                match State::mov(&realState, down, up){
-                    Ok(t) => realState=t,
-                    Err(v)=> println!("{:?}", v),
+                Move | Jump=>{
+                    if State::move_control(&realState, down, up)==Ok(true){
+                        println!("moving");
+                        match State::mov(&realState, down, up){
+                            Ok(t) => realState=t,
+                            Err(v)=> println!("{:?}", v),
+                        }
+                    }
+                }
+                _=>{
+
                 }
 
             }
