@@ -300,7 +300,6 @@ impl event::EventHandler for MainState {
         self.realState = apply_input(self.realInput.clone(), self.realState.clone());
         if self.realState.turn == -1 {
             self.waitTicks = 2;
-
         }
     }
 
