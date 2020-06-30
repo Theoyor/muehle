@@ -260,17 +260,6 @@ impl event::EventHandler for MainState {
 
         }
 
-        /*let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::fill(), na::Point2::new(100.0, 100.0), 14.0, 0.1, graphics::BLACK).unwrap();
-        graphics::draw(ctx, &spielstein, (na::Point2::new(0.0, 0.0),))?;
-
-
-        fn drawspielstein( fd:(i8,i8,i8)) {
-            if fd.2 == 1 {
-                let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::fill(), na::Point2::new(100.0, 100.0), 14.0, 0.1, graphics::BLACK).unwrap();
-            }
-
-        }
-        */
         graphics::present(ctx)?;
         Ok(())
     }
