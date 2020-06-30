@@ -94,7 +94,7 @@ pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (f32,f32, i8) {
         _ => return (-1.0,-1.0,-1)
     }
 
-    
+
 }
 
 pub fn coordsToIndex(fd:(f32,f32))-> usize {
@@ -282,6 +282,9 @@ impl event::EventHandler for MainState {
         println!("{:?}", coordsToIndex((x,y)));
         self.realInput.up=coordsToIndex((x,y));
         self.realState = apply_input(self.realInput.clone(), self.realState.clone());
+        if(self.realState.turn == 2){
+            self.realState = act::start(6,self.realState.clone()).1;
+        }
     }
 
 }
