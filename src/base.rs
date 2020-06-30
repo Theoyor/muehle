@@ -169,16 +169,17 @@ pub mod base{
                         if field.1 == fd.1 {
                             y_counter += 1;
                         }
-                        if field.0 == fd.0 && (field.1 - fd.1).abs() < 3 {
+                        if field.0 == fd.0 && (field.1 > 4 && fd.1 > 4 || field.1 < 4 && fd.1 < 4) {
                             x_counter += 1;
                         }
+
                     }
                     // y Koordinate == 4 ist ein Sonderfall
                     else if fd.1 == 4 {
                         if field.0 == fd.0 {
                             x_counter += 1;
                         }
-                        if field.1 == fd.1 && (field.0 - fd.0).abs() < 3 {
+                        if field.1 == fd.1 && (field.0 > 4 && fd.0 > 4 || field.0 < 4 && fd.0 < 4) {
                             y_counter += 1;
                         }
                     }
