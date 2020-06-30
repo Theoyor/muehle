@@ -9,6 +9,4 @@ ggez:
 
 	
 Spiel:
-	Überprüfen
-	Züge: Move, place, remove
-	
+

@@ -413,7 +413,7 @@ pub mod base{
         }
         //Bekommt das zu verändernde Feld angegeben
         pub fn remove(&self, field: (i8,i8,i8))->Result<State, &str>{
-            //* Gibt wenn möglich einen State nacheinem remove-Zug aus
+            //* Gibt wenn möglich einen State nach einem remove-Zug aus
             let mut st = self.clone();
             
             //removen

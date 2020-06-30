@@ -35,7 +35,7 @@ pub mod action{
                             }else if c == (0,0,0){
                                 c = *field;
                             }else{
-                                print!("Hier ist ein Fehler Jump")
+                                print!("Error Jump in Start")
                             }
                         }
                     }
@@ -91,7 +91,7 @@ pub mod action{
                       }  
                     }
                 },
-                _=>{println!("alter was geht max")}
+                _=>{println!("Error max in Start")}
                     
             }
 
