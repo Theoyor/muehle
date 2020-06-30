@@ -35,7 +35,7 @@ pub mod action{
                             }else if c == (0,0,0){
                                 c = *field;
                             }else{
-                                print!("Error Jump in Start")
+                                print!("1 Error Jump in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)
                             }
                         }
                     }
@@ -91,7 +91,7 @@ pub mod action{
                       }  
                     }
                 },
-                _=>{println!("Error max in Start")}
+                _=>{print!("2 Error Max in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)}
                     
             }
 
@@ -117,7 +117,7 @@ pub mod action{
                             }else if c == (0,0,0){
                                 c = *field;
                             }else{
-                                print!("Hier ist ein Fehler Jump")
+                                print!("3 Error Jump in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)
                             }
                         }
                     }
@@ -168,7 +168,7 @@ pub mod action{
                         }  
                     }
                 },
-                _=>{println!("alter was geht min")}
+                _=>{print!("4 Error Min in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)}
                     
             }
 
@@ -211,7 +211,7 @@ pub mod action{
                             }else if c == (0,0,0){
                                 c = *field;
                             }else{
-                                print!("Hier ist ein Fehler Jump")
+                                print!("5 Error Jump in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)
                             }
                         }
                     }
@@ -263,7 +263,7 @@ pub mod action{
                       }  
                     }
                 },
-                _=>{println!("alter was geht max")}
+                _=>{print!("6 Error Max in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)}
                     
             }
 
@@ -288,7 +288,7 @@ pub mod action{
                             }else if c == (0,0,0){
                                 c = *field;
                             }else{
-                                print!("Hier ist ein Fehler Jump")
+                                print!("7 Error Jump in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)
                             }
                         }
                     }
@@ -334,7 +334,7 @@ pub mod action{
                         }  
                     }
                 },
-                _=>{println!("alter was geht min")}
+                _=>{print!("8 Error Jump in Start \n depth: {}, P1-Stones:{},P2-Stones:{}",depth,state.p1_stones,state.p2_stones)}
                     
             }
 
