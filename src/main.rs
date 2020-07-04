@@ -286,9 +286,10 @@ impl event::EventHandler for MainState {
         )?;
         graphics::draw(ctx, &inforahmen2, (na::Point2::new(0.0, 0.0),))?;
 
-        let textinfo = ggez::graphics::Text::new("MOin");
+        //let textfont = graphics::Font::new(ctx, "/font.ttf");
+        //let textinfo = ggez::graphics::Text::new(("MoinMeister", textfont,16.0));
         
-        graphics::draw(ctx, &textinfo, (na::Point2::new(0.0, 0.0),))?;
+        //graphics::draw(ctx, &textinfo, (na::Point2::new(0.0, 0.0),))?;
 
 
         graphics::present(ctx)?;
