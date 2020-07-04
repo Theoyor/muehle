@@ -267,6 +267,30 @@ impl event::EventHandler for MainState {
 
         }
 
+        //Spielinformationen:
+        let inforahmensize = graphics::Rect::new(610.0, 100.0, 450.0, 400.0);
+        let inforahmen = graphics::Mesh::new_rectangle(
+            ctx, 
+            graphics::DrawMode::stroke(4.0), 
+            inforahmensize, 
+            graphics::BLACK
+        )?;
+        graphics::draw(ctx, &inforahmen, (na::Point2::new(0.0, 0.0),))?;
+
+        let inforahmensize2 = graphics::Rect::new(615.0, 105.0, 450.0, 390.0);
+        let inforahmen2 = graphics::Mesh::new_rectangle(
+            ctx, 
+            graphics::DrawMode::stroke(2.0), 
+            inforahmensize2, 
+            graphics::BLACK
+        )?;
+        graphics::draw(ctx, &inforahmen2, (na::Point2::new(0.0, 0.0),))?;
+
+        let textinfo = ggez::graphics::Text::new("MOin");
+        
+        graphics::draw(ctx, &textinfo, (na::Point2::new(0.0, 0.0),))?;
+
+
         graphics::present(ctx)?;
         Ok(())
     }
@@ -389,7 +413,7 @@ fn apply_input(realInput: PlayerInput, mut realState: State, players: u8) -> Sta
 pub fn start() -> ggez::GameResult { 
     let cb = ggez::ContextBuilder::new("Muehle", "Rust-Atzen")
         .window_setup(conf::WindowSetup::default().title("Muehle"))
-        .window_mode(conf::WindowMode::default().dimensions(800.0, 600.0));
+        .window_mode(conf::WindowMode::default().dimensions(900.0, 600.0));
     
     let (ctx, event_loop) = &mut cb.build()?;
     let state = &mut MainState::new()?;
