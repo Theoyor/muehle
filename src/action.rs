@@ -30,11 +30,13 @@ pub mod action{
                                     maxeval = eval;
                                     do_this = state.ki_remove( *field);
                                 }
+
                             },
                             Err(_) =>{}
                       }
                     }  
-                  }
+                }
+                return (maxeval, do_this);
             }
 
             match &state.p1_mode{
@@ -120,6 +122,26 @@ pub mod action{
             let mut mineval:i8 = 100;
             let mut do_this:State = State::new();
 
+            if state.allowed{
+                //sucht alle gegnerischen Steine ab und versucht sie zu löschen
+                for field in &state.board{
+                    if field.2 == 1 {
+                        match state.remove_control(*field){
+                            Ok(_) => {
+                                let eval = descend(depth-1, state.ki_remove( *field),-100,100);
+                                if eval < mineval{
+                                    mineval = eval;
+                                    do_this = state.ki_remove( *field);
+                                }
+
+                            },
+                            Err(_) =>{}
+                      }
+                    }  
+                }
+                return (mineval, do_this);
+            }
+
             match &state.p2_mode{
                 PlayMode::Jump => {
                 
@@ -199,12 +221,62 @@ pub mod action{
     pub fn descend(depth: i8, state: State, alpha: i8, beta: i8 )->i8{ //möglicherweise zu i16 ändern
         let mut alph = alpha;
         let mut bet = beta;
+        let mut maxeval:i8 = -100;
+        let mut mineval:i8 = 100;
         // Wenn jemand im vorerigen Zug gewonnen hat, wird eine hohe Bewertung ausgegeben
         if state.p1_mode == PlayMode::Won{
             return 110; //Hardcode ist lit
         }else if state.p2_mode == PlayMode::Won{
             return -110;
         }
+
+        //wenn ein Stein removed werden kann steige bedingungslos einen Zug weiter ab und sene die Tiefe nicht
+        if state.turn == 1{
+
+            if state.allowed{
+                //sucht alle leeren Felder und testet ein plazieren auf sie
+                for field in &state.board{
+                    if field.2 == -1 {
+                        match &state.remove_control(*field) {
+                        
+                            Ok(_)=> {   
+                                let eval :i8 = descend(depth,state.ki_remove(*field),alph,bet);
+                                maxeval = cmp::max(eval, maxeval);
+                                alph = cmp::max(alph,eval);
+                                if bet <= alph {
+                                    break;
+                                }
+                            },
+                            Err(_) =>{}
+                        }
+                    }  
+                }
+            }
+        }else{
+            if state.allowed{
+                //sucht alle leeren Felder und testet ein plazieren auf sie
+                for field in &state.board{
+                    if field.2 == 1 {
+                        match &state.remove_control(*field) {
+                        
+                            Ok(_)=> {   
+                                let eval : i8 = descend(depth,state.ki_place(*field),alph,bet);
+                                mineval = cmp::min(eval, mineval);
+                                bet = cmp::min(bet,eval);
+                                if bet <= alph {
+                                    break;
+                                }
+                            },
+                            Err(_) =>{}
+                        }
+                    }  
+                }
+            }
+        }
+
+
+
+
         // Wenn Suchtiefe ausgeschöpft, führe Spielstandsbwerzúng durch
         if depth == 0{
             return state.spielstandbewertung();
@@ -212,7 +284,7 @@ pub mod action{
 
         //hier kommt rekursives Absteigen für entweder maximalen Spieler (1) oder minimalen Spieler (-1)
         if state.turn == 1{
-            let mut maxeval:i8 = -100;
+            
             
 
 
@@ -279,7 +351,7 @@ pub mod action{
                           maxeval = cmp::max(eval, maxeval);
                           alph = cmp::max(alph,eval);
                           if bet <= alph {
-                              break;
+                            break;
                           }
                       }  
                     }
@@ -291,7 +363,7 @@ pub mod action{
         return  maxeval;   
         }
         else{
-            let mut mineval:i8 = 100;
+            
 
             match &state.p2_mode{
                 PlayMode::Jump => {
