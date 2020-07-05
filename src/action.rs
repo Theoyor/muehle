@@ -251,6 +251,7 @@ pub mod action{
                         }
                     }  
                 }
+                return maxeval;
             }
         }else{
             if state.allowed{
@@ -272,6 +273,7 @@ pub mod action{
                     }  
                 }
             }
+            return mineval;
         }
 
 
