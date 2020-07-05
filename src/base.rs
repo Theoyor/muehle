@@ -556,7 +556,7 @@ pub mod base{
             /*println!("{}", x);
             println!("{}", y);
             println!("{}", z); */
-            return x+y+z+r;
+            return x+2*y+z+3*r;
         }
 
 
