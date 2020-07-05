@@ -621,7 +621,19 @@ pub mod base{
         pub fn ki_place(&self, field:(i8,i8,i8))->State{ 
             let mut st = self.clone();
             st.change( (field.0,field.1,st.turn) );
-            
+
+            //Falls Mühle gelegt wurde
+            /*if st.spot_muehle((field.0,field.1,st.turn))>0{
+                let fd = st.steineSchlagen();
+                st.change((fd.0, fd.1, 0));
+                if field.2 == 1 {
+                    st.p1_stones=st.p1_stones-1;
+                }
+                if field.2 == -1 {
+                    st.p2_stones=st.p2_stones-1;
+                }
+            }
+            */
             //Wen 8 Steine gesetzt worden sind, in den Move-Zustand wechseln, sonst den Steine-Counter erhöhen
             if st.turn == 1{
                 match st.p1_mode {
