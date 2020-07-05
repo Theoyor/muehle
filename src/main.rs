@@ -56,8 +56,8 @@ impl MainState {
     fn new() -> ggez::GameResult<MainState> {
         let s = MainState {
             mouse_down: false,
-            realState:place_tst(State::new()),
-            realInput: PlayerInput{down:24, up:24},
+            realState:State::new(),
+            realInput: PlayerInput{down:25, up:25},
             waitTicks: 0,
             players: 1,
         };
@@ -142,8 +142,11 @@ pub fn coordsToIndex(fd:(f32,f32))-> usize {
         (482..=518, 482..=518) => return 21,
         (482..=518, 282..=318) => return 22,
         (482..=518, 82..=118) => return 23,
+        (650..=850, 140..=200) => return 24,
 
-        _ => return 24
+
+
+        _ => return 25
     }
 }
 
@@ -300,7 +303,7 @@ impl event::EventHandler for MainState {
 
         if self.realState.turn == -1 && self.players==1{
             if self.waitTicks == 0{
-                self.realState = act::start(5,self.realState.clone()).1;
+                self.realState = act::start(4,self.realState.clone()).1;
             }
             else{
                 self.waitTicks -= 1;
@@ -326,8 +329,10 @@ impl event::EventHandler for MainState {
         self.mouse_down = false;
         println!("Mouse button released");
         println!("{:?}", coordsToIndex((x,y)));
+        println!("{:?},{:?}", x,y);
         self.realInput.up=coordsToIndex((x,y));
-        self.realState = apply_input(self.realInput.clone(), self.realState.clone(), self.players.clone());
+        self.realState = apply_input(self.realInput.clone(), self.realState.clone(), self.players.clone()).0;
+        self.players = apply_input(self.realInput.clone(), self.realState.clone(), self.players.clone()).1;
         if self.realState.turn == -1 && self.players==1{
             self.waitTicks = 2;
         }
@@ -336,8 +341,18 @@ impl event::EventHandler for MainState {
 
 }
 
-fn apply_input(realInput: PlayerInput, mut realState: State, players: u8) -> State {
-    if realInput.up == 24 || realInput.down == 24 || players==1 && realState.turn== -1{
+fn apply_input(realInput: PlayerInput, mut realState: State, mut players: u8) -> (State, u8) {
+    if realInput.up == 24 && realInput.down == 24{
+        if players==1{
+            players = 2;
+        }
+        else{
+            players = 1;
+        }
+        realState = State::new();
+        return (realState,players);
+    }
+    if realInput.up == 25 || realInput.down == 25 || players==1 && realState.turn== -1{
         println!("Did nothing");
     } else {
         let up: (i8,i8,i8) = realState.board[realInput.up];
@@ -408,7 +423,7 @@ fn apply_input(realInput: PlayerInput, mut realState: State, players: u8) -> Sta
         }
         println!("applied");
     }
-    return realState;
+    return (realState,players);
 }
 
 pub fn start() -> ggez::GameResult { 
