@@ -59,6 +59,7 @@ pub mod action{
                             
                         }
                     }
+                    
                     },
 
                 PlayMode::Move =>{
@@ -176,7 +177,7 @@ pub mod action{
         }
     }
 
-    
+
     pub fn descend(depth: i8, state: State, alpha: i8, beta: i8 )->i8{ //möglicherweise zu i16 ändern
         let mut alph = alpha;
         let mut bet = beta;
