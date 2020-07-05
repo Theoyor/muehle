@@ -314,9 +314,18 @@ pub mod base{
             if rem == (0,0,0){
                 return Err("Feld existert nicht")
             }
-            // falls rem Teil einer Mühle ist
+            // falls rem Teil einer Mühle ist und es freihe Steine gibt
             if self.spot_muehle(rem)> 0{
-                return Err("Stein ist Teil einer Mühle");
+                // return Error, sobald ein Stein vom gleichen Typ nicht in einer Mühle ist 
+                for field in &self.board {
+                    if field.2 == rem.2 && self.spot_muehle(*field) == 0{
+                        return Err("Stein ist Teil einer Mühle");
+                    }
+                    
+                }
+
+
+                
             }
             //falls das Feld leer ist 
             if rem.2 == 0{

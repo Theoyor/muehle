@@ -175,6 +175,8 @@ pub mod action{
             return  (mineval,do_this);
         }
     }
+
+    
     pub fn descend(depth: i8, state: State, alpha: i8, beta: i8 )->i8{ //möglicherweise zu i16 ändern
         let mut alph = alpha;
         let mut bet = beta;
