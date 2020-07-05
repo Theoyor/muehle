@@ -580,15 +580,7 @@ pub mod base{
 
             //falls Mühle entstanden ist den "besten"Stein schlagen
             if st.spot_muehle((to.0,to.1,st.turn))>0{
-                let field = st.steineSchlagen();   
-                st.change((field.0,field.1, 0));
-                if field.2 == 1 {
-                    st.p1_stones=st.p1_stones-1;
-                }
-                if field.2 == -1 {
-                    st.p2_stones=st.p2_stones-1;
-                }
-
+                st.allowed = true;
             }
             if st.turn == 1{
 
@@ -610,18 +602,30 @@ pub mod base{
                     st.p2_mode = PlayMode::Won;
                 }  
             }
-            
-            st.turn *= -1;
-
+            if (st.allowed==false) {
+                st.turn *= -1;
+            }
             return st;
         }
 
-
-        //Bekommt das zu verändernde Feld eingegeben, Man gewinnt aktuell leider noch nicht, wenn man nach dem letzten place den Gegner eingeschlossen hat
+        pub fn ki_remove(&self, field:(i8,i8,i8))->State{
+            let mut st = self.clone();
+            st.change( (field.0,field.1,0) );
+            st.allowed = false;
+            st.p1_stones= st.p1_stones-1;
+            st.turn *= -1;
+            return st;
+        }
+            //Bekommt das zu verändernde Feld eingegeben, Man gewinnt aktuell leider noch nicht, wenn man nach dem letzten place den Gegner eingeschlossen hat
         pub fn ki_place(&self, field:(i8,i8,i8))->State{ 
             let mut st = self.clone();
             st.change( (field.0,field.1,st.turn) );
-            
+
+            //Falls Mühle gelegt wurde
+            if st.spot_muehle((field.0,field.1,st.turn))>0{
+                st.allowed==true;
+            }
+
             //Wen 8 Steine gesetzt worden sind, in den Move-Zustand wechseln, sonst den Steine-Counter erhöhen
             if st.turn == 1{
                 match st.p1_mode {
@@ -638,8 +642,9 @@ pub mod base{
             }
 
             //Zug beenden
-            st.turn *= -1;
-            
+            if (st.allowed==false) {
+                st.turn *= -1;
+            }
             return st;
         
         }
