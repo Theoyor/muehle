@@ -19,6 +19,24 @@ pub mod action{
             let mut maxeval:i8 = -100;
             let mut do_this:State = State::new();
 
+            if state.allowed{
+                //sucht alle gegnerischen Steine ab und versucht sie zu löschen
+                for field in &state.board{
+                    if field.2 == -1 {
+                        match state.remove_control(*field){
+                            Ok(_) => {
+                                let eval = descend(depth-1, state.ki_remove( *field),-100,100);
+                                if eval > maxeval{
+                                    maxeval = eval;
+                                    do_this = state.ki_remove( *field);
+                                }
+                            },
+                            Err(_) =>{}
+                      }
+                    }  
+                  }
+            }
+
             match &state.p1_mode{
                 PlayMode::Jump => {
                 
@@ -59,7 +77,7 @@ pub mod action{
                             
                         }
                     }
-                    
+
                     },
 
                 PlayMode::Move =>{
