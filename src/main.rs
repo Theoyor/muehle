@@ -273,7 +273,7 @@ impl event::EventHandler for MainState {
         }
 
         //Spielinformationen:
-        let inforahmensize = graphics::Rect::new(610.0, 100.0, 450.0, 400.0);
+        let inforahmensize = graphics::Rect::new(610.0, 100.0, 285.0, 400.0);
         let inforahmen = graphics::Mesh::new_rectangle(
             ctx, 
             graphics::DrawMode::stroke(4.0), 
@@ -282,7 +282,7 @@ impl event::EventHandler for MainState {
         )?;
         graphics::draw(ctx, &inforahmen, (na::Point2::new(0.0, 0.0),))?;
 
-        let inforahmensize2 = graphics::Rect::new(615.0, 105.0, 450.0, 390.0);
+        let inforahmensize2 = graphics::Rect::new(615.0, 105.0, 275.0, 390.0);
         let inforahmen2 = graphics::Mesh::new_rectangle(
             ctx, 
             graphics::DrawMode::stroke(2.0), 
@@ -335,7 +335,29 @@ impl event::EventHandler for MainState {
                         graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
                     }
                         
-            _ => {}
+            _ => {
+                    if self.realState.turn == 1 {
+                        
+                        let textfont = graphics::Font::default();
+                        let text_dest = na::Point2::new(650.0, 120.0);
+                        let text_str = format!("Weiß ist dran");
+                        let text_display = graphics::Text::new((text_str, textfont, 32.0));
+                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+
+
+
+                    }
+                    else {
+
+                        let textfont = graphics::Font::default();
+                        let text_dest = na::Point2::new(650.0, 120.0);
+                        let text_str = format!("Schwarz ist dran");
+                        let text_display = graphics::Text::new((text_str, textfont, 32.0));
+                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+
+                    }
+
+            }
             
         }
 
