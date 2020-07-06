@@ -337,38 +337,140 @@ impl event::EventHandler for MainState {
                     }
                         
             _ => {
-                    if self.realState.turn == 1 {
+                    if self.realState.p1_mode == PlayMode::Won {
+                        let textfont = graphics::Font::default();
+                        let text_dest = na::Point2::new(660.0, 140.0);
+                        let text_str = format!("Weiß hat");
+                        let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                                
+                        let textfont = graphics::Font::default();
+                        let text_dest = na::Point2::new(663.0, 180.0);
+                        let text_str = format!("gewonnen!");
+                        let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                    }
+                    else if self.realState.p2_mode == PlayMode::Won{
+                        let textfont = graphics::Font::default();
+                        let text_dest = na::Point2::new(655.0, 140.0);
+                        let text_str = format!("Schwarz hat");
+                        let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
                         
                         let textfont = graphics::Font::default();
-                        let text_dest = na::Point2::new(660.0, 120.0);
-                        let text_str = format!("Weiß ist dran");
-                        let text_display = graphics::Text::new((text_str, textfont, 32.0));
+                        let text_dest = na::Point2::new(663.0, 180.0);
+                        let text_str = format!("gewonnen!");
+                        let text_display = graphics::Text::new((text_str, textfont, 35.0));
                         graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
-
-                        match &self.realState.p1_mode {
-                            Place(_) => {
-                                let textfont = graphics::Font::default();
-                                let text_dest = na::Point2::new(660.0, 150.0);
-                                let text_str = format!("mit Setzen");
-                                let text_display = graphics::Text::new((text_str, textfont, 32.0));
-                                graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
-                            }
-                            _ => {}
-                        }
-
-
-
                     }
                     else {
-
-                        let textfont = graphics::Font::default();
-                        let text_dest = na::Point2::new(630.0, 120.0);
-                        let text_str = format!("Schwarz ist dran");
-                        let text_display = graphics::Text::new((text_str, textfont, 32.0));
-                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
-
+                        if self.realState.turn == 1 {
+                        
+                            if self.realState.allowed == true {
+                                let textfont = graphics::Font::default();
+                                let text_dest = na::Point2::new(650.0, 140.0);
+                                let text_str = format!("Weiß ist dran");
+                                let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                                
+                                let textfont = graphics::Font::default();
+                                let text_dest = na::Point2::new(650.0, 180.0);
+                                let text_str = format!("mit Schlagen");
+                                let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                            }
+                            else {
+                                let textfont = graphics::Font::default();
+                                let text_dest = na::Point2::new(650.0, 140.0);
+                                let text_str = format!("Weiß ist dran");
+                                let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+        
+                                match &self.realState.p1_mode {
+                                    Place(_) => {
+                                        let textfont = graphics::Font::default();
+                                        let text_dest = na::Point2::new(665.0, 180.0);
+                                        let text_str = format!("mit Setzen");
+                                        let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                                    }
+                                    Move => {
+                                        let textfont = graphics::Font::default();
+                                        let text_dest = na::Point2::new(650.0, 180.0);
+                                        let text_str = format!("mit Bewegen");
+                                        let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                                    }
+                                    Jump => {
+                                        let textfont = graphics::Font::default();
+                                        let text_dest = na::Point2::new(660.0, 180.0);
+                                        let text_str = format!("mit Springen");
+                                        let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                                    }
+                                    
+                                    
+                                    _ => {}
+                                }
+                            }
+    
+    
+    
+    
+                        }
+                        else {
+    
+                            if self.realState.allowed == true {
+                                let textfont = graphics::Font::default();
+                                let text_dest = na::Point2::new(628.0, 140.0);
+                                let text_str = format!("Schwarz ist dran");
+                                let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                                
+                                let textfont = graphics::Font::default();
+                                let text_dest = na::Point2::new(650.0, 180.0);
+                                let text_str = format!("mit Schlagen");
+                                let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                            }
+                            else {
+                                let textfont = graphics::Font::default();
+                                let text_dest = na::Point2::new(628.0, 140.0);
+                                let text_str = format!("Schwarz ist dran");
+                                let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+        
+                                match &self.realState.p1_mode {
+                                    Place(_) => {
+                                        let textfont = graphics::Font::default();
+                                        let text_dest = na::Point2::new(665.0, 180.0);
+                                        let text_str = format!("mit Setzen");
+                                        let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                                    }
+                                    Move => {
+                                        let textfont = graphics::Font::default();
+                                        let text_dest = na::Point2::new(650.0, 180.0);
+                                        let text_str = format!("mit Bewegen");
+                                        let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                                    }
+                                    Jump => {
+                                        let textfont = graphics::Font::default();
+                                        let text_dest = na::Point2::new(660.0, 180.0);
+                                        let text_str = format!("mit Springen");
+                                        let text_display = graphics::Text::new((text_str, textfont, 35.0));
+                                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                                    }
+                                    
+                                    
+                                    _ => {}
+                                }
+                            }
+    
+                        }
+    
                     }
-
             }
             
         }
