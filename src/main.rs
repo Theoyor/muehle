@@ -440,7 +440,7 @@ impl event::EventHandler for MainState {
                                 let text_display = graphics::Text::new((text_str, textfont, 35.0));
                                 graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
         
-                                match &self.realState.p1_mode {
+                                match &self.realState.p2_mode {
                                     Place(_) => {
                                         let textfont = graphics::Font::default();
                                         let text_dest = na::Point2::new(665.0, 180.0);
