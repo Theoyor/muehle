@@ -290,18 +290,47 @@ impl event::EventHandler for MainState {
         graphics::draw(ctx, &inforahmen2, (na::Point2::new(0.0, 0.0),))?;
         
         
+        //Text
         let textfont = graphics::Font::default();
-        let text_dest = na::Point2::new(10.0, 10.0);
-        let text_str = format!("Moin");
+        let text_dest = na::Point2::new(650.0, 120.0);
+        let text_str = format!("Gegner wählen:");
         let text_display = graphics::Text::new((text_str, textfont, 32.0));
         graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
         
         
-        //let textinfo = ggez::graphics::Text::new(("MoinMeister", textfont,16.0));
-        
-        //graphics::draw(ctx, &textinfo, (na::Point2::new(0.0, 0.0),))?;
+        //Auswahl-Spieler
+        let auswahlrahmensize = graphics::Rect::new(630.0, 160.0, 120.0, 40.0);
+        let auswahlrahmen = graphics::Mesh::new_rectangle(
+            ctx, 
+            graphics::DrawMode::stroke(2.0), 
+            auswahlrahmensize, 
+            graphics::BLACK
+        )?;
+        graphics::draw(ctx, &auswahlrahmen, (na::Point2::new(0.0, 0.0),))?;
 
+        let textfont = graphics::Font::default();
+        let text_dest = na::Point2::new(650.0, 170.0);
+        let text_str = format!("Spieler");
+        let text_display = graphics::Text::new((text_str, textfont, 24.0));
+        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
 
+        //Auswahl-Compiuter
+        let auswahlrahmensize2 = graphics::Rect::new(765.0, 160.0, 120.0, 40.0);
+        let auswahlrahmen2 = graphics::Mesh::new_rectangle(
+            ctx, 
+            graphics::DrawMode::stroke(2.0), 
+            auswahlrahmensize2, 
+            graphics::BLACK
+        )?;
+        graphics::draw(ctx, &auswahlrahmen2, (na::Point2::new(0.0, 0.0),))?;
+
+        let textfont = graphics::Font::default();
+        let text_dest = na::Point2::new(770.0, 170.0);
+        let text_str = format!("Computer");
+        let text_display = graphics::Text::new((text_str, textfont, 24.0));
+        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+
+        //Standardrückgabe von draw
         graphics::present(ctx)?;
         Ok(())
     }
