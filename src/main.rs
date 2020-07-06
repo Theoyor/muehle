@@ -292,45 +292,70 @@ impl event::EventHandler for MainState {
         graphics::draw(ctx, &inforahmen2, (na::Point2::new(0.0, 0.0),))?;
         
         
-        //Text
-        let textfont = graphics::Font::default();
-        let text_dest = na::Point2::new(650.0, 120.0);
-        let text_str = format!("Gegner wählen:");
-        let text_display = graphics::Text::new((text_str, textfont, 32.0));
-        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
-        
-        
-        //Auswahl-Spieler
-        let auswahlrahmensize = graphics::Rect::new(630.0, 160.0, 120.0, 40.0);
-        let auswahlrahmen = graphics::Mesh::new_rectangle(
+        match &self.realState.p1_mode {
+            Place(0) => {
+                        //Auswahlfrage
+                        let textfont = graphics::Font::default();
+                        let text_dest = na::Point2::new(650.0, 120.0);
+                        let text_str = format!("Gegner wählen:");
+                        let text_display = graphics::Text::new((text_str, textfont, 32.0));
+                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                        
+                        
+                        //Auswahl-Spieler
+                        let auswahlrahmensize = graphics::Rect::new(630.0, 160.0, 120.0, 40.0);
+                        let auswahlrahmen = graphics::Mesh::new_rectangle(
+                            ctx, 
+                            graphics::DrawMode::stroke(2.0), 
+                            auswahlrahmensize, 
+                            graphics::BLACK
+                        )?;
+                        graphics::draw(ctx, &auswahlrahmen, (na::Point2::new(0.0, 0.0),))?;
+
+                        let textfont = graphics::Font::default();
+                        let text_dest = na::Point2::new(650.0, 170.0);
+                        let text_str = format!("Spieler");
+                        let text_display = graphics::Text::new((text_str, textfont, 24.0));
+                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+
+                        //Auswahl-Computer
+                        let auswahlrahmensize2 = graphics::Rect::new(765.0, 160.0, 120.0, 40.0);
+                        let auswahlrahmen2 = graphics::Mesh::new_rectangle(
+                            ctx, 
+                            graphics::DrawMode::stroke(2.0), 
+                            auswahlrahmensize2, 
+                            graphics::BLACK
+                        )?;
+                        graphics::draw(ctx, &auswahlrahmen2, (na::Point2::new(0.0, 0.0),))?;
+
+                        let textfont = graphics::Font::default();
+                        let text_dest = na::Point2::new(770.0, 170.0);
+                        let text_str = format!("Computer");
+                        let text_display = graphics::Text::new((text_str, textfont, 24.0));
+                        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                    }
+                        
+            _ => {}
+            
+        }
+
+
+        //Reset
+        let resetrahmensize = graphics::Rect::new(615.0, 470.0, 60.0, 25.0);
+        let resetrahmen = graphics::Mesh::new_rectangle(
             ctx, 
             graphics::DrawMode::stroke(2.0), 
-            auswahlrahmensize, 
+            resetrahmensize, 
             graphics::BLACK
         )?;
-        graphics::draw(ctx, &auswahlrahmen, (na::Point2::new(0.0, 0.0),))?;
+        graphics::draw(ctx, &resetrahmen, (na::Point2::new(0.0, 0.0),))?;
 
         let textfont = graphics::Font::default();
-        let text_dest = na::Point2::new(650.0, 170.0);
-        let text_str = format!("Spieler");
-        let text_display = graphics::Text::new((text_str, textfont, 24.0));
+        let text_dest = na::Point2::new(620.0, 473.0);
+        let text_str = format!("Reset");
+        let text_display = graphics::Text::new((text_str, textfont, 20.0));
         graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
 
-        //Auswahl-Compiuter
-        let auswahlrahmensize2 = graphics::Rect::new(765.0, 160.0, 120.0, 40.0);
-        let auswahlrahmen2 = graphics::Mesh::new_rectangle(
-            ctx, 
-            graphics::DrawMode::stroke(2.0), 
-            auswahlrahmensize2, 
-            graphics::BLACK
-        )?;
-        graphics::draw(ctx, &auswahlrahmen2, (na::Point2::new(0.0, 0.0),))?;
-
-        let textfont = graphics::Font::default();
-        let text_dest = na::Point2::new(770.0, 170.0);
-        let text_str = format!("Computer");
-        let text_display = graphics::Text::new((text_str, textfont, 24.0));
-        graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
 
         //Standardrückgabe von draw
         graphics::present(ctx)?;
@@ -485,50 +510,6 @@ pub fn start() -> ggez::GameResult {
 
 
 
-/*
-
-fn mov_test(mut fd:State)->State{
-    fd = fd.mov((4,2,1), (4,1,0)).unwrap();
-    fd = fd.mov((4,6,-1), (6,6,0)).unwrap();
-    
-    fd = fd.mov((2,2,1), (4,2,0)).unwrap();
-    fd = fd.remove((6,4,-1)).unwrap();
-    return fd;
-}
-
-*/
-
-fn place_tst(mut fd:State)->State{
-    fd = fd.place((4,2,0)).unwrap();
-    fd = fd.place((7,4,0)).unwrap();
-    
-    fd = fd.place((1,1,0)).unwrap();
-    fd = fd.place((7,1,0)).unwrap();
-    
-    fd = fd.place((4,3,0)).unwrap();
-    fd = fd.place((7,7,0)).unwrap();
-    fd = fd.remove((1,1,1)).unwrap();
-    
-    fd = fd.place((1,4,0)).unwrap();
-    fd = fd.place((3,3,0)).unwrap();
-    
-    fd = fd.place((5,5,0)).unwrap();
-    fd = fd.place((5,3,0)).unwrap();
-    
-    fd = fd.place((2,6,0)).unwrap();
-    fd = fd.place((4,6,0)).unwrap();
-
-    fd = fd.place((1,7,0)).unwrap();
-    fd = fd.place((4,7,0)).unwrap();
-    
-    fd = fd.place((3,5,0)).unwrap();
-    fd = fd.place((6,4,0)).unwrap();
-    
-    fd = fd.place(( 2,2,0)).unwrap();
-    fd = fd.place((3,4,0)).unwrap();
-
-    return fd;
-}
 
 pub fn max_three(a:i8,b:i8,c:i8)->i8{
     if a>=b && a>=c {
