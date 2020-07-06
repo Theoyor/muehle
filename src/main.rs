@@ -345,6 +345,17 @@ impl event::EventHandler for MainState {
                         let text_display = graphics::Text::new((text_str, textfont, 32.0));
                         graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
 
+                        match &self.realState.p1_mode {
+                            Place(_) => {
+                                let textfont = graphics::Font::default();
+                                let text_dest = na::Point2::new(660.0, 150.0);
+                                let text_str = format!("mit Setzen");
+                                let text_display = graphics::Text::new((text_str, textfont, 32.0));
+                                graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
+                            }
+                            _ => {}
+                        }
+
 
 
                     }
