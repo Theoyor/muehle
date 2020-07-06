@@ -206,6 +206,7 @@ pub mod base{
         }
 
         //
+
         pub fn spot_pot_muehle(&self, field: (i8,i8,i8)) -> i8{
             //let field = self.coords_to_field(ffield.0, ffield.1).unwrap();
             let mut ret  = 0;
@@ -227,33 +228,33 @@ pub mod base{
                 }
 
             }else{ 
-                let mut ownx:u8 = 0;
-                let mut freex = (0,0,0);
-                let mut owny:u8 = 0;
-                let mut freey = (0,0,0);
-                //Schaut wieviele eigene Steine neben ihm liegen und setzt, falls es gibt, ein freies Feld auf freex/freey
+                let mut own_x:u8 = 0;
+                let mut free_x = (0,0,0);
+                let mut own_y:u8 = 0;
+                let mut free_y = (0,0,0);
+                //Schaut wieviele eigene Steine neben ihm liegen und setzt, falls es gibt, ein freies Feld auf free_x/free_y
                 for n in neighbors{
                     if n.0 == field.0 && n.2 == field.2{
-                        ownx += 1;
+                        own_x += 1;
                     }else if n.0 == field.0 && n.2 == 0{
-                        freex = n;
+                        free_x = n;
                     }
                     if n.1 == field.1 && n.2 == field.2{
-                        owny += 1;
+                        own_y += 1;
                     }else if n.1 == field.1 && n.2 == 0{
-                        freey = n;
+                        free_y = n;
                     }
                 }
 
-                //println!("{}  {:?}",ownx ,freex);
-                //println!("{}  {:?}",owny ,freey);
+                //println!("{}  {:?}",ownx ,free_x);
+                //println!("{}  {:?}",owny ,free_y);
 
-                if ownx == 1 && freex != (0,0,0){
+                if own_x == 1 && free_x != (0,0,0){
                     //Falls field genau einen Nachbar auf der x-Achse hat und der andere kein gegner sondern leer ist
                     let mut nb_count = 0;
-                    let nb = self.get_neighbor(freex);
+                    let nb = self.get_neighbor(free_x);
                     for n in nb{
-                        if n.1 == freex.1 || n.0 == freex.0 && n.2 == field.2{
+                        if n.1 == free_x.1 || n.0 == free_x.0 && n.2 == field.2{
                         nb_count += 1;
                     }
                     }
@@ -262,11 +263,11 @@ pub mod base{
                     }
                 }
                 //kein else
-                if owny == 1 && freey != (0,0,0){
+                if own_y == 1 && free_y != (0,0,0){
                     let mut nb_count = 0;
-                    let nb = self.get_neighbor(freey);
+                    let nb = self.get_neighbor(free_y);
                     for n in nb{
-                        if n.1 == freey.1 || n.0 == freey.0 && n.2 == field.2{
+                        if n.1 == free_y.1 || n.0 == free_y.0 && n.2 == field.2{
                             nb_count += 1;
                         }
                     }
@@ -314,9 +315,18 @@ pub mod base{
             if rem == (0,0,0){
                 return Err("Feld existert nicht")
             }
-            // falls rem Teil einer Mühle ist
+            // falls rem Teil einer Mühle ist und es freihe Steine gibt
             if self.spot_muehle(rem)> 0{
-                return Err("Stein ist Teil einer Mühle");
+                // return Error, sobald ein Stein vom gleichen Typ nicht in einer Mühle ist 
+                for field in &self.board {
+                    if field.2 == rem.2 && self.spot_muehle(*field) == 0{
+                        return Err("Stein ist Teil einer Mühle");
+                    }
+                    
+                }
+
+
+                
             }
             //falls das Feld leer ist 
             if rem.2 == 0{
@@ -546,7 +556,7 @@ pub mod base{
             /*println!("{}", x);
             println!("{}", y);
             println!("{}", z); */
-            return x+y+z+r;
+            return x+2*y+z+3*r;
         }
 
 
@@ -570,15 +580,7 @@ pub mod base{
 
             //falls Mühle entstanden ist den "besten"Stein schlagen
             if st.spot_muehle((to.0,to.1,st.turn))>0{
-                let field = st.steineSchlagen();   
-                st.change((field.0,field.1, 0));
-                if field.2 == 1 {
-                    st.p1_stones=st.p1_stones-1;
-                }
-                if field.2 == -1 {
-                    st.p2_stones=st.p2_stones-1;
-                }
-
+                st.allowed = true;
             }
             if st.turn == 1{
 
@@ -600,31 +602,30 @@ pub mod base{
                     st.p2_mode = PlayMode::Won;
                 }  
             }
-            
-            st.turn *= -1;
-
+            if (st.allowed==false) {
+                st.turn *= -1;
+            }
             return st;
         }
 
-
-        //Bekommt das zu verändernde Feld eingegeben, Man gewinnt aktuell leider noch nicht, wenn man nach dem letzten place den Gegner eingeschlossen hat
+        pub fn ki_remove(&self, field:(i8,i8,i8))->State{
+            let mut st = self.clone();
+            st.change( (field.0,field.1,0) );
+            st.allowed = false;
+            st.p1_stones= st.p1_stones-1;
+            st.turn *= -1;
+            return st;
+        }
+            //Bekommt das zu verändernde Feld eingegeben, Man gewinnt aktuell leider noch nicht, wenn man nach dem letzten place den Gegner eingeschlossen hat
         pub fn ki_place(&self, field:(i8,i8,i8))->State{ 
             let mut st = self.clone();
-
             st.change( (field.0,field.1,st.turn) );
 
             //Falls Mühle gelegt wurde
             if st.spot_muehle((field.0,field.1,st.turn))>0{
-                let fd = st.steineSchlagen();
-                st.change((fd.0, fd.1, 0));
-                if field.2 == 1 {
-                    st.p1_stones=st.p1_stones-1;
-                }
-                if field.2 == -1 {
-                    st.p2_stones=st.p2_stones-1;
-                }
+                st.allowed==true;
             }
-            
+
             //Wen 8 Steine gesetzt worden sind, in den Move-Zustand wechseln, sonst den Steine-Counter erhöhen
             if st.turn == 1{
                 match st.p1_mode {
@@ -641,8 +642,9 @@ pub mod base{
             }
 
             //Zug beenden
-            st.turn *= -1;
-            
+            if (st.allowed==false) {
+                st.turn *= -1;
+            }
             return st;
         
         }
@@ -650,23 +652,43 @@ pub mod base{
         pub fn steineSchlagen(&self)->(i8,i8,i8){
             let mut bestStone : (i8,i8,i8) = (0,0,0);
             let mut bestStoneValue : i8 = 0;
+            let mut bestStoneMuehle : (i8,i8,i8) = (0,0,0);
+            let mut bestStoneValueMuehle : i8 = 0;
             for field in &self.board {
                 let mut stoneValue : i8 = 1;
-                if  field.2 == 0 || field.2 == self.turn || self.spot_muehle(*field)>0 {
+                let mut stoneValueMuehle : i8 = 1;
+                if  field.2 == 0 || field.2 == -1 {
                     continue;
                 }
-                if self.spot_pot_muehle(*field)>0 {
+                if self.spot_muehle(*field)>0 {
+                    if self.spot_pot_muehle(*field)>0 {
+                        stoneValueMuehle = stoneValueMuehle + self.spot_pot_muehle(*field);
+                    }
+
+                }
+                else if self.spot_pot_muehle(*field)>0 {
                     stoneValue = stoneValue + self.spot_pot_muehle(*field);
                 }
                 if stoneValue > bestStoneValue {
                     bestStone = *field;
                     bestStoneValue = stoneValue;
                 }
+                if stoneValueMuehle > bestStoneValueMuehle {
+                    bestStoneMuehle = *field;
+                    bestStoneValueMuehle = stoneValueMuehle;
+                }
+
             }
             // Nicht unbedingt sehr intelligent fehlt mindestens noch sowas wie nicht bewegliche Steine
             // guckt nur ob teil einer potenziellen mühle bzw ob er überhaupt geschlagen werden darf
             //println!("hello {}",bestStoneValue);
-            return bestStone;
+            //print!("{} {} {} \n",bestStone.0,bestStone.1,bestStone.2);
+            if bestStone != (0,0,0) {
+                return bestStone;
+            }
+            else {
+                return bestStoneMuehle;
+            }
         }
 
 
