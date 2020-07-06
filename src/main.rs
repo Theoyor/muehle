@@ -274,7 +274,7 @@ impl event::EventHandler for MainState {
         }
 
         //Spielinformationen:
-        let inforahmensize = graphics::Rect::new(610.0, 100.0, 285.0, 400.0);
+        let inforahmensize = graphics::Rect::new(610.0, 100.0, 285.0, 200.0);
         let inforahmen = graphics::Mesh::new_rectangle(
             ctx, 
             graphics::DrawMode::stroke(4.0), 
@@ -283,7 +283,7 @@ impl event::EventHandler for MainState {
         )?;
         graphics::draw(ctx, &inforahmen, (na::Point2::new(0.0, 0.0),))?;
 
-        let inforahmensize2 = graphics::Rect::new(615.0, 105.0, 275.0, 390.0);
+        let inforahmensize2 = graphics::Rect::new(615.0, 105.0, 275.0, 190.0);
         let inforahmen2 = graphics::Mesh::new_rectangle(
             ctx, 
             graphics::DrawMode::stroke(2.0), 
@@ -340,7 +340,7 @@ impl event::EventHandler for MainState {
                     if self.realState.turn == 1 {
                         
                         let textfont = graphics::Font::default();
-                        let text_dest = na::Point2::new(650.0, 120.0);
+                        let text_dest = na::Point2::new(660.0, 120.0);
                         let text_str = format!("Weiß ist dran");
                         let text_display = graphics::Text::new((text_str, textfont, 32.0));
                         graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
@@ -351,7 +351,7 @@ impl event::EventHandler for MainState {
                     else {
 
                         let textfont = graphics::Font::default();
-                        let text_dest = na::Point2::new(650.0, 120.0);
+                        let text_dest = na::Point2::new(630.0, 120.0);
                         let text_str = format!("Schwarz ist dran");
                         let text_display = graphics::Text::new((text_str, textfont, 32.0));
                         graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
@@ -364,7 +364,7 @@ impl event::EventHandler for MainState {
 
 
         //Reset
-        let resetrahmensize = graphics::Rect::new(615.0, 470.0, 60.0, 25.0);
+        let resetrahmensize = graphics::Rect::new(615.0, 270.0, 60.0, 25.0);
         let resetrahmen = graphics::Mesh::new_rectangle(
             ctx, 
             graphics::DrawMode::stroke(2.0), 
@@ -374,7 +374,7 @@ impl event::EventHandler for MainState {
         graphics::draw(ctx, &resetrahmen, (na::Point2::new(0.0, 0.0),))?;
 
         let textfont = graphics::Font::default();
-        let text_dest = na::Point2::new(620.0, 473.0);
+        let text_dest = na::Point2::new(620.0, 273.0);
         let text_str = format!("Reset");
         let text_display = graphics::Text::new((text_str, textfont, 20.0));
         graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
