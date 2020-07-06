@@ -57,7 +57,7 @@ impl MainState {
         let s = MainState {
             mouse_down: false,
             realState:State::new(),
-            realInput: PlayerInput{down:25, up:25},
+            realInput: PlayerInput{down:26, up:26},
             waitTicks: 0,
             players: 1,
         };
@@ -142,11 +142,13 @@ pub fn coordsToIndex(fd:(f32,f32))-> usize {
         (482..=518, 482..=518) => return 21,
         (482..=518, 282..=318) => return 22,
         (482..=518, 82..=118) => return 23,
-        (650..=850, 140..=200) => return 24,
+        (630..=750, 160..=200) => return 24,
+        (765..=885, 160..=200) => return 25,
 
 
 
-        _ => return 25
+
+        _ => return 26
     }
 }
 
@@ -381,16 +383,16 @@ impl event::EventHandler for MainState {
 
 fn apply_input(realInput: PlayerInput, mut realState: State, mut players: u8) -> (State, u8) {
     if realInput.up == 24 && realInput.down == 24{
-        if players==1{
-            players = 2;
-        }
-        else{
-            players = 1;
-        }
+        players = 2;
         realState = State::new();
         return (realState,players);
     }
-    if realInput.up == 25 || realInput.down == 25 || players==1 && realState.turn== -1{
+    if realInput.up == 25 && realInput.down ==25{
+        players = 1;
+        realState = State::new();
+        return (realState,players);
+    }
+    if realInput.up == 26 || realInput.down == 26 || players==1 && realState.turn== -1{
         println!("Did nothing");
     } else {
         let up: (i8,i8,i8) = realState.board[realInput.up];
