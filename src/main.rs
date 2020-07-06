@@ -289,9 +289,8 @@ impl event::EventHandler for MainState {
         )?;
         graphics::draw(ctx, &inforahmen2, (na::Point2::new(0.0, 0.0),))?;
         
-        println!("Getting Font");
+        
         let textfont = graphics::Font::default();
-        println!("Font gotten");
         let text_dest = na::Point2::new(10.0, 10.0);
         let text_str = format!("Moin");
         let text_display = graphics::Text::new((text_str, textfont, 32.0));
