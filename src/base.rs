@@ -612,7 +612,21 @@ pub mod base{
             let mut st = self.clone();
             st.change( (field.0,field.1,0) );
             st.allowed = false;
-            st.p1_stones= st.p1_stones-1;
+
+             //Falls sich der gegner nicht mehr bewegen kann, hat man gewonnen
+             if 0 == self.movable(st.turn*-1){
+                if st.turn == 1{
+                    st.p1_mode = PlayMode::Won;
+                }else{   
+                    st.p2_mode = PlayMode::Won;
+                }
+            }
+
+            if st.turn == -1 {
+                st.p1_stones = st.p1_stones - 1;
+            }if st.turn == 1 {
+                st.p2_stones = st.p2_stones -1;
+            }
             st.turn *= -1;
             return st;
         }

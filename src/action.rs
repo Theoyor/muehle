@@ -240,7 +240,7 @@ pub mod action{
                         match &state.remove_control(*field) {
                         
                             Ok(_)=> {   
-                                let eval :i8 = descend(depth,state.ki_remove(*field),alph,bet);
+                                let eval :i8 = descend(depth-1,state.ki_remove(*field),alph,bet);
                                 maxeval = cmp::max(eval, maxeval);
                                 alph = cmp::max(alph,eval);
                                 if bet <= alph {
@@ -261,7 +261,7 @@ pub mod action{
                         match &state.remove_control(*field) {
                         
                             Ok(_)=> {   
-                                let eval : i8 = descend(depth,state.ki_place(*field),alph,bet);
+                                let eval : i8 = descend(depth-1,state.ki_place(*field),alph,bet);
                                 mineval = cmp::min(eval, mineval);
                                 bet = cmp::min(bet,eval);
                                 if bet <= alph {
@@ -280,7 +280,7 @@ pub mod action{
 
 
         // Wenn Suchtiefe ausgeschöpft, führe Spielstandsbwerzúng durch
-        if depth == 0{
+        if depth <= 0{
             return state.spielstandbewertung();
         }
 
