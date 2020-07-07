@@ -339,7 +339,7 @@ impl event::EventHandler for MainState {
             _ => {
                     if self.realState.p1_mode == PlayMode::Won {
                         let textfont = graphics::Font::default();
-                        let text_dest = na::Point2::new(660.0, 140.0);
+                        let text_dest = na::Point2::new(663.0, 140.0);
                         let text_str = format!("Weiß hat");
                         let text_display = graphics::Text::new((text_str, textfont, 35.0));
                         graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
