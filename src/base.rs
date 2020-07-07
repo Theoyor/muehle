@@ -556,7 +556,7 @@ pub mod base{
             /*println!("{}", x);
             println!("{}", y);
             println!("{}", z); */
-            return x+2*y+z+3*r;
+            return x+y+z+6*r;
         }
 
 
@@ -637,7 +637,7 @@ pub mod base{
 
             //Falls Mühle gelegt wurde
             if st.spot_muehle((field.0,field.1,st.turn))>0{
-                st.allowed==true;
+                st.allowed=true;
             }
 
             //Wen 8 Steine gesetzt worden sind, in den Move-Zustand wechseln, sonst den Steine-Counter erhöhen
@@ -663,7 +663,7 @@ pub mod base{
         
         }
 
-        pub fn steineSchlagen(&self)->(i8,i8,i8){
+       /* pub fn steineSchlagen(&self)->(i8,i8,i8){
             let mut bestStone : (i8,i8,i8) = (0,0,0);
             let mut bestStoneValue : i8 = 0;
             let mut bestStoneMuehle : (i8,i8,i8) = (0,0,0);
@@ -707,7 +707,7 @@ pub mod base{
 
 
 
-        
+        */
     }
 
 
