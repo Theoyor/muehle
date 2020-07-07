@@ -62,9 +62,9 @@ pub mod action{
                     // Testet descend mit allen möglichen Feldern und den drei "eigenen" Feldern
                     for field in &state.board{
                         if field.2 == 0{
-                            let evala = descend( depth-1 ,state.ki_mov(a, *field),-100,100);
-                            let evalb = descend( depth-1 ,state.ki_mov(b, *field),-100,100);
-                            let evalc = descend( depth-1 ,state.ki_mov(c, *field),-100,100);
+                            let evala = descend( depth-2 ,state.ki_mov(a, *field),-100,100);
+                            let evalb = descend( depth-2 ,state.ki_mov(b, *field),-100,100);
+                            let evalc = descend( depth-2 ,state.ki_mov(c, *field),-100,100);
 
                             if evala >= evalb && evala >= evalc && evala > maxeval{
                                 maxeval= evala;
@@ -164,9 +164,9 @@ pub mod action{
                     }
                         for field in &state.board{
                             if field.2 == 0{
-                                let evala = descend( depth-1 ,state.ki_mov(a, *field),-100,100);
-                                let evalb = descend( depth-1 ,state.ki_mov(b, *field),-100,100);
-                                let evalc = descend( depth-1 ,state.ki_mov(c, *field),-100,100);
+                                let evala = descend( depth-2 ,state.ki_mov(a, *field),-100,100);
+                                let evalb = descend( depth-2 ,state.ki_mov(b, *field),-100,100);
+                                let evalc = descend( depth-2 ,state.ki_mov(c, *field),-100,100);
 
                                 if evala <= evalb && evala <= evalc && evala < mineval{
                                     mineval = evala;
@@ -240,7 +240,7 @@ pub mod action{
                         match &state.remove_control(*field) {
                         
                             Ok(_)=> {   
-                                let eval :i8 = descend(depth-1,state.ki_remove(*field),alph,bet);
+                                let eval :i8 = descend(depth,state.ki_remove(*field),alph,bet);
                                 maxeval = cmp::max(eval, maxeval);
                                 alph = cmp::max(alph,eval);
                                 if bet <= alph {
@@ -261,7 +261,7 @@ pub mod action{
                         match &state.remove_control(*field) {
                         
                             Ok(_)=> {   
-                                let eval : i8 = descend(depth-1,state.ki_place(*field),alph,bet);
+                                let eval : i8 = descend(depth,state.ki_place(*field),alph,bet);
                                 mineval = cmp::min(eval, mineval);
                                 bet = cmp::min(bet,eval);
                                 if bet <= alph {
