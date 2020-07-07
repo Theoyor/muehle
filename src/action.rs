@@ -4,7 +4,6 @@ pub mod action{
     use super::super::base::base::PlayMode;
     use std::cmp;
 
-    //hii
     pub fn start(depth: i8, state: State )->(i8,State){ //möglicherweise zu i16 ändern 
         
         // Wenn jemand im vorerigen Zug gewonnen hat, wird eine hohe Bewertung ausgegeben
@@ -218,7 +217,7 @@ pub mod action{
     }
 
 
-    pub fn descend(depth: i8, state: State, alpha: i8, beta: i8 )->i8{ //möglicherweise zu i16 ändern
+    pub fn descend(depth: i8, mut state: State, alpha: i8, beta: i8 )->i8{ //möglicherweise zu i16 ändern
         let mut alph = alpha;
         let mut bet = beta;
         let mut maxeval:i8 = -100;
@@ -230,52 +229,12 @@ pub mod action{
             return -110;
         }
 
-        //wenn ein Stein removed werden kann steige bedingungslos einen Zug weiter ab und sene die Tiefe nicht
-        if state.turn == 1{
-
-            if state.allowed{
-                //sucht alle leeren Felder und testet ein plazieren auf sie
-                for field in &state.board{
-                    if field.2 == -1 {
-                        match &state.remove_control(*field) {
-                        
-                            Ok(_)=> {   
-                                let eval :i8 = descend(depth,state.ki_remove(*field),alph,bet);
-                                maxeval = cmp::max(eval, maxeval);
-                                alph = cmp::max(alph,eval);
-                                if bet <= alph {
-                                    break;
-                                }
-                            },
-                            Err(_) =>{}
-                        }
-                    } 
-                    return maxeval; 
-                }
-            }
-        }else{
-            if state.allowed{
-                //sucht alle leeren Felder und testet ein plazieren auf sie
-                for field in &state.board{
-                    if field.2 == 1 {
-                        match &state.remove_control(*field) {
-                        
-                            Ok(_)=> {   
-                                let eval : i8 = descend(depth,state.ki_place(*field),alph,bet);
-                                mineval = cmp::min(eval, mineval);
-                                bet = cmp::min(bet,eval);
-                                if bet <= alph {
-                                    break;
-                                }
-                            },
-                            Err(_) =>{}
-                        }
-                    }  
-                }
-                return mineval;
-            }
+        if state.allowed{
+            let stone = state.steineSchlagen();
+            state.change((stone.0,stone.1,0));
+            state.allowed = false;
         }
-
+            
 
 
 

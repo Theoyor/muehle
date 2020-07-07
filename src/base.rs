@@ -602,7 +602,7 @@ pub mod base{
                     st.p2_mode = PlayMode::Won;
                 }  
             }
-            if (st.allowed==false) {
+            if !st.allowed {
                 st.turn *= -1;
             }
             return st;
@@ -656,14 +656,14 @@ pub mod base{
             }
 
             //Zug beenden
-            if (st.allowed==false) {
+            if !st.allowed {
                 st.turn *= -1;
             }
             return st;
         
         }
 
-       /* pub fn steineSchlagen(&self)->(i8,i8,i8){
+        pub fn steineSchlagen(&self)->(i8,i8,i8){
             let mut bestStone : (i8,i8,i8) = (0,0,0);
             let mut bestStoneValue : i8 = 0;
             let mut bestStoneMuehle : (i8,i8,i8) = (0,0,0);
@@ -707,7 +707,7 @@ pub mod base{
 
 
 
-        */
+        
     }
 
 
