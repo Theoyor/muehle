@@ -637,7 +637,7 @@ pub mod base{
 
             //Falls Mühle gelegt wurde
             if st.spot_muehle((field.0,field.1,st.turn))>0{
-                st.allowed==true;
+                st.allowed=true;
             }
 
             //Wen 8 Steine gesetzt worden sind, in den Move-Zustand wechseln, sonst den Steine-Counter erhöhen
