@@ -4,7 +4,7 @@ pub mod action{
     use super::super::base::base::PlayMode;
     use std::cmp;
 
-    
+    //hii
     pub fn start(depth: i8, state: State )->(i8,State){ //möglicherweise zu i16 ändern 
         
         // Wenn jemand im vorerigen Zug gewonnen hat, wird eine hohe Bewertung ausgegeben
