@@ -503,8 +503,8 @@ impl event::EventHandler for MainState {
         if self.realState.turn == -1 && self.players==1{
             if self.waitTicks == 0{
                 self.realState = act::start(6,self.realState.clone()).1;
-               // println!("acted");
-                //println!("P1-Stones:{},P2-Stones:{},allowed:{} \n",self.realState.p1_stones,self.realState.p2_stones,self.realState.allowed);
+                println!("acted");
+                println!("P1-Stones:{},P2-Stones:{},allowed:{} \n",self.realState.p1_stones,self.realState.p2_stones,self.realState.allowed);
             }
             else{
                 self.waitTicks -= 1;
