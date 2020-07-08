@@ -3,11 +3,10 @@ pub mod action{
     use super::super::base::base::State;
     use super::super::base::base::PlayMode;
     use std::cmp;
-    use num_cpus;
+    //use num_cpus;
 
     pub fn start(depth: i8, state: State )->(i8,State){ //möglicherweise zu i16 ändern 
-        let cpus = num_cpus::get();
-        print!("CPUs: {}",cpus);
+        //let cpus = num_cpus::get();
         // Wenn jemand im vorerigen Zug gewonnen hat, wird eine hohe Bewertung ausgegeben
         if state.p1_mode == PlayMode::Won{
             return (110, state); //Hardcode ist lit
@@ -19,7 +18,7 @@ pub mod action{
         if state.turn == 1{
             let mut maxeval:i8 = -100;
             let mut do_this:State = State::new();
-            /*
+
             if state.allowed{
                 //sucht alle gegnerischen Steine ab und versucht sie zu löschen
                 for field in &state.board{
@@ -38,8 +37,7 @@ pub mod action{
                     }  
                 }
                 return (maxeval, do_this);
-            } */
-
+            }
             match &state.p1_mode{
                 PlayMode::Jump => {
                 
@@ -81,7 +79,7 @@ pub mod action{
                         }
                     }
 
-                    },
+                },
 
                 PlayMode::Move =>{
                     //Sucht alle leeren Felder und testet auf diesen Feldern mov von allen benachbarten Feldern, die einen eigenen Stein beherbergen 
@@ -142,7 +140,6 @@ pub mod action{
                 }
                 return (mineval, do_this);
             }
-
             match &state.p2_mode{
                 PlayMode::Jump => {
                 
@@ -236,10 +233,6 @@ pub mod action{
             state.change((stone.0,stone.1,0));
             state.allowed = false;
         }
-            
-
-
-
         // Wenn Suchtiefe ausgeschöpft, führe Spielstandsbwerzúng durch
         if depth <= 0{
             return state.spielstandbewertung();

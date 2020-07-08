@@ -12,9 +12,12 @@ mod action;
 use action::action as act;
 use crate::base::base::PlayMode::{Place, Move, Jump};
 use crate::base::base::PlayMode;
+use num_cpus;
 
 
 pub fn main() {
+    let cpus = num_cpus::get();
+    print!("CPUs: {} \n",cpus);
     start().expect("Spiel konnte nicht gestartet werden");
 }
 
@@ -482,15 +485,23 @@ impl event::EventHandler for MainState {
     }
 
     fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
+        match self.real_state.p1_mode {
+            PlayMode::Won => {return Ok(());},
+            _=> { }
+        }
+        match self.real_state.p2_mode {
+            PlayMode::Won => {return Ok(());},
+            _=> { }
+        }
 
         if self.real_state.turn == -1 && self.players==1{
             if self.wait_ticks == 0{
                 let sys_time = SystemTime::now();
                 self.real_state = act::start(6, self.real_state.clone()).1;
                 let difference = sys_time.elapsed();
-                println!("Berechnungszeit:{:?} \n", difference);
+                println!("Berechnungszeit:{:?}", difference);
                 println!("acted");
-                println!("P1-Stones:{},P2-Stones:{},allowed:{} \n", self.real_state.p1_stones, self.real_state.p2_stones, self.real_state.allowed);
+                //println!("P1-Stones:{},P2-Stones:{},allowed:{} \n", self.real_state.p1_stones, self.real_state.p2_stones, self.real_state.allowed);
             }
             else{
                 self.wait_ticks -= 1;
@@ -506,24 +517,24 @@ impl event::EventHandler for MainState {
 
     fn mouse_button_down_event(&mut self, _ctx: &mut Context, _button: MouseButton, x: f32, y: f32) {
         self.mouse_down = true;
-        println!("Mouse button pressed");
-        println!("{:?}", coords_to_index((x, y)));
+        //println!("Mouse button pressed");
+        //println!("{:?}", coords_to_index((x, y)));
         self.real_input.down= coords_to_index((x, y));
 
     }
 
     fn mouse_button_up_event(&mut self, _ctx: &mut Context, _button: MouseButton, x: f32, y: f32) {
         self.mouse_down = false;
-        println!("Mouse button released");
-        println!("{:?}", coords_to_index((x, y)));
-        println!("{:?},{:?}", x,y);
+        //println!("Mouse button released");
+        //println!("{:?}", coords_to_index((x, y)));
+        //println!("{:?},{:?}", x,y);
         self.real_input.up= coords_to_index((x, y));
         self.real_state = apply_input(self.real_input.clone(), self.real_state.clone(), self.players.clone()).0;
         self.players = apply_input(self.real_input.clone(), self.real_state.clone(), self.players.clone()).1;
         if self.real_state.turn == -1 && self.players==1{
             self.wait_ticks = 2;
         }
-        println!("P1-Stones:{},P2-Stones:{},allowed:{} \n", self.real_state.p1_stones, self.real_state.p2_stones, self.real_state.allowed);
+        //println!("P1-Stones:{},P2-Stones:{},allowed:{} \n", self.real_state.p1_stones, self.real_state.p2_stones, self.real_state.allowed);
     }
 
 }
@@ -541,7 +552,7 @@ fn apply_input(real_input: PlayerInput, mut real_state: State, mut players: u8) 
         return (State::new(), players);
     }
     if real_input.up == 27 || real_input.down == 27 || players==1 && real_state.turn== -1{
-        println!("Did nothing");
+        //println!("Did nothing");
     } else {
         let up: (i8,i8,i8) = real_state.board[real_input.up];
         let down: (i8,i8,i8) = real_state.board[real_input.down];

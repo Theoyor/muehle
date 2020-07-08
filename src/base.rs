@@ -12,8 +12,6 @@ pub mod base{
         Place(u8),
         Move,
         Jump,
-        //Remove,
-        //Allowed,
         Won,
     }
 
@@ -637,8 +635,6 @@ pub mod base{
             }
             // Nicht unbedingt sehr intelligent fehlt mindestens noch sowas wie nicht bewegliche Steine
             // guckt nur ob teil einer potenziellen mühle bzw ob er überhaupt geschlagen werden darf
-            //println!("hello {}",bestStoneValue);
-            //print!("{} {} {} \n",bestStone.0,bestStone.1,bestStone.2);
             if best_stone != (0, 0, 0) {
                 return best_stone;
             }
