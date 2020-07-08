@@ -4,8 +4,8 @@ use ggez::event::{self, MouseButton};
 use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::conf;
-use crate::action::action::start as strt;
-use std::time::{Duration,SystemTime};
+//use crate::action::action::start as strt;
+use std::time::{SystemTime};
 mod base;   
 use base::base::State;
 mod action;
@@ -15,32 +15,15 @@ use crate::base::base::PlayMode;
 
 
 pub fn main() {
-    let sys_time = SystemTime::now();
-    //let mut fd = State::new();
-
-    //fd = place_tst(fd);
-    //fd = mov_test(fd);
-    //let i = fd.spot_pot_muehle((4,2,1));
-    //println!("{}", i);
-    //println!("{:?}", fd);
-    //fd.spielstandbewertung();
-    //println!("{:?}",fd.steineSchlagen());
-    start();
-
-    //let tup = strt(6,fd);
-    //println!("Bewertung: {}",tup.0);
-    //println!("{:?}", tup.1);
-
-    let difference = sys_time.elapsed();
-    println!("{:?}", difference);
+    start().expect("Spiel konnte nicht gestartet werden");
 }
 
 
 struct MainState {
     mouse_down: bool,
-    realState: State,
-    realInput: PlayerInput,
-    waitTicks: u8,
+    real_state: State,
+    real_input: PlayerInput,
+    wait_ticks: u8,
     players: u8,
 }
 
@@ -56,16 +39,16 @@ impl MainState {
     fn new() -> ggez::GameResult<MainState> {
         let s = MainState {
             mouse_down: false,
-            realState:State::new(),
-            realInput: PlayerInput{down:27, up:27},
-            waitTicks: 0,
+            real_state:State::new(),
+            real_input: PlayerInput{down:27, up:27},
+            wait_ticks: 0,
             players: 1,
         };
         Ok(s)
     }
 }
 
-pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (f32,f32, i8) {
+pub fn field_to_coordinates(fd:(i8, i8, i8)) -> (f32, f32, i8) {
     match fd {
         (1, 1, x) => return (100.0,500.0,x),
         (1, 4, x) => return (100.0,300.0,x),
@@ -104,7 +87,7 @@ pub fn fieldToCoordinates(fd:(i8,i8,i8))-> (f32,f32, i8) {
 
 }
 
-pub fn coordsToIndex(fd:(f32,f32))-> usize {
+pub fn coords_to_index(fd:(f32, f32)) -> usize {
     let mut fi: (i16, i16) = (0,0);
     let x: i16 = fd.0 as i16;
     let y: i16 = fd.1 as i16;
@@ -254,9 +237,9 @@ impl event::EventHandler for MainState {
         
         //Spielsteine:
 
-        for pos in &self.realState.board {
+        for pos in &self.real_state.board {
             
-            let mut steinkoordinaten = fieldToCoordinates(*pos);
+            let steinkoordinaten = field_to_coordinates(*pos);
 
             if steinkoordinaten.2 == (-1) {
                 let spielstein= graphics::Mesh::new_circle(ctx, graphics::DrawMode::fill(), na::Point2::new(steinkoordinaten.0, steinkoordinaten.1), 18.0, 0.1, graphics::BLACK).unwrap();
@@ -293,7 +276,7 @@ impl event::EventHandler for MainState {
         graphics::draw(ctx, &inforahmen2, (na::Point2::new(0.0, 0.0),))?;
         
         
-        match &self.realState.p1_mode {
+        match &self.real_state.p1_mode {
             Place(0) => {
                         //Auswahlfrage
                         let textfont = graphics::Font::default();
@@ -337,7 +320,7 @@ impl event::EventHandler for MainState {
                     }
                         
             _ => {
-                    if self.realState.p1_mode == PlayMode::Won {
+                    if self.real_state.p1_mode == PlayMode::Won {
                         let textfont = graphics::Font::default();
                         let text_dest = na::Point2::new(670.0, 140.0);
                         let text_str = format!("Weiß hat");
@@ -350,7 +333,7 @@ impl event::EventHandler for MainState {
                         let text_display = graphics::Text::new((text_str, textfont, 35.0));
                         graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
                     }
-                    else if self.realState.p2_mode == PlayMode::Won{
+                    else if self.real_state.p2_mode == PlayMode::Won{
                         let textfont = graphics::Font::default();
                         let text_dest = na::Point2::new(655.0, 140.0);
                         let text_str = format!("Schwarz hat");
@@ -364,9 +347,9 @@ impl event::EventHandler for MainState {
                         graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
                     }
                     else {
-                        if self.realState.turn == 1 {
+                        if self.real_state.turn == 1 {
                         
-                            if self.realState.allowed == true {
+                            if self.real_state.allowed == true {
                                 let textfont = graphics::Font::default();
                                 let text_dest = na::Point2::new(650.0, 140.0);
                                 let text_str = format!("Weiß ist dran");
@@ -386,7 +369,7 @@ impl event::EventHandler for MainState {
                                 let text_display = graphics::Text::new((text_str, textfont, 35.0));
                                 graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
         
-                                match &self.realState.p1_mode {
+                                match &self.real_state.p1_mode {
                                     Place(_) => {
                                         let textfont = graphics::Font::default();
                                         let text_dest = na::Point2::new(665.0, 180.0);
@@ -420,7 +403,7 @@ impl event::EventHandler for MainState {
                         }
                         else {
     
-                            if self.realState.allowed == true {
+                            if self.real_state.allowed == true {
                                 let textfont = graphics::Font::default();
                                 let text_dest = na::Point2::new(628.0, 140.0);
                                 let text_str = format!("Schwarz ist dran");
@@ -440,7 +423,7 @@ impl event::EventHandler for MainState {
                                 let text_display = graphics::Text::new((text_str, textfont, 35.0));
                                 graphics::draw(ctx, &text_display, (text_dest, 0.0, graphics::BLACK))?;
         
-                                match &self.realState.p2_mode {
+                                match &self.real_state.p2_mode {
                                     Place(_) => {
                                         let textfont = graphics::Font::default();
                                         let text_dest = na::Point2::new(665.0, 180.0);
@@ -500,14 +483,17 @@ impl event::EventHandler for MainState {
 
     fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
 
-        if self.realState.turn == -1 && self.players==1{
-            if self.waitTicks == 0{
-                self.realState = act::start(5,self.realState.clone()).1;
+        if self.real_state.turn == -1 && self.players==1{
+            if self.wait_ticks == 0{
+                let sys_time = SystemTime::now();
+                self.real_state = act::start(6, self.real_state.clone()).1;
+                let difference = sys_time.elapsed();
+                println!("Berechnungszeit:{:?} \n", difference);
                 println!("acted");
-                println!("P1-Stones:{},P2-Stones:{},allowed:{} \n",self.realState.p1_stones,self.realState.p2_stones,self.realState.allowed);
+                println!("P1-Stones:{},P2-Stones:{},allowed:{} \n", self.real_state.p1_stones, self.real_state.p2_stones, self.real_state.allowed);
             }
             else{
-                self.waitTicks -= 1;
+                self.wait_ticks -= 1;
             }
         }
 
@@ -518,74 +504,74 @@ impl event::EventHandler for MainState {
 
     
 
-    fn mouse_button_down_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
+    fn mouse_button_down_event(&mut self, _ctx: &mut Context, _button: MouseButton, x: f32, y: f32) {
         self.mouse_down = true;
         println!("Mouse button pressed");
-        println!("{:?}", coordsToIndex((x,y)));
-        self.realInput.down=coordsToIndex((x,y));
+        println!("{:?}", coords_to_index((x, y)));
+        self.real_input.down= coords_to_index((x, y));
 
     }
 
-    fn mouse_button_up_event(&mut self, _ctx: &mut Context, button: MouseButton, x: f32, y: f32) {
+    fn mouse_button_up_event(&mut self, _ctx: &mut Context, _button: MouseButton, x: f32, y: f32) {
         self.mouse_down = false;
         println!("Mouse button released");
-        println!("{:?}", coordsToIndex((x,y)));
+        println!("{:?}", coords_to_index((x, y)));
         println!("{:?},{:?}", x,y);
-        self.realInput.up=coordsToIndex((x,y));
-        self.realState = apply_input(self.realInput.clone(), self.realState.clone(), self.players.clone()).0;
-        self.players = apply_input(self.realInput.clone(), self.realState.clone(), self.players.clone()).1;
-        if self.realState.turn == -1 && self.players==1{
-            self.waitTicks = 2;
+        self.real_input.up= coords_to_index((x, y));
+        self.real_state = apply_input(self.real_input.clone(), self.real_state.clone(), self.players.clone()).0;
+        self.players = apply_input(self.real_input.clone(), self.real_state.clone(), self.players.clone()).1;
+        if self.real_state.turn == -1 && self.players==1{
+            self.wait_ticks = 2;
         }
-        println!("P1-Stones:{},P2-Stones:{},allowed:{} \n",self.realState.p1_stones,self.realState.p2_stones,self.realState.allowed);
+        println!("P1-Stones:{},P2-Stones:{},allowed:{} \n", self.real_state.p1_stones, self.real_state.p2_stones, self.real_state.allowed);
     }
 
 }
 
-fn apply_input(realInput: PlayerInput, mut realState: State, mut players: u8) -> (State, u8) {
-    if realInput.up == 24 && realInput.down == 24{
+fn apply_input(real_input: PlayerInput, mut real_state: State, mut players: u8) -> (State, u8) {
+    if real_input.up == 24 && real_input.down == 24{
         players = 2;
-        return (realState,players);
+        return (real_state, players);
     }
-    if realInput.up == 25 && realInput.down ==25{
+    if real_input.up == 25 && real_input.down ==25{
         players = 1;
-        return (realState,players);
+        return (real_state, players);
     }
-    if realInput.up == 26 && realInput.down ==26{
+    if real_input.up == 26 && real_input.down ==26{
         return (State::new(), players);
     }
-    if realInput.up == 27 || realInput.down == 27 || players==1 && realState.turn== -1{
+    if real_input.up == 27 || real_input.down == 27 || players==1 && real_state.turn== -1{
         println!("Did nothing");
     } else {
-        let up: (i8,i8,i8) = realState.board[realInput.up];
-        let down: (i8,i8,i8) = realState.board[realInput.down];
-        if realState.allowed==true{
-            if State::remove_control(&realState, up)==Ok(true)  && up == down{
+        let up: (i8,i8,i8) = real_state.board[real_input.up];
+        let down: (i8,i8,i8) = real_state.board[real_input.down];
+        if real_state.allowed==true{
+            if State::remove_control(&real_state, up)==Ok(true)  && up == down{
                 println!("removing");
-                match State::remove(&realState, up){
-                    Ok(t) => realState=t,
+                match State::remove(&real_state, up){
+                    Ok(t) => real_state =t,
                     Err(v)=> println!("{:?}", v),
                 }
 
             }
         }
         else{
-            if players==2 && realState.turn==-1{
-                match realState.p2_mode{
+            if players==2 && real_state.turn==-1{
+                match real_state.p2_mode{
                     Place(_)=>{
-                        if up == down && State::place_control(&realState, down)==Ok(true){
+                        if up == down && State::place_control(&real_state, down)==Ok(true){
                             println!("placing");
-                            match State::place(&realState, down){
-                                Ok(t) => realState=t,
+                            match State::place(&real_state, down){
+                                Ok(t) => real_state =t,
                                 Err(v)=> println!("{:?}", v),
                             }
                         }
                     }
                     Move | Jump=>{
-                        if State::move_control(&realState, down, up)==Ok(true){
+                        if State::move_control(&real_state, down, up)==Ok(true){
                             println!("moving");
-                            match State::mov(&realState, down, up){
-                                Ok(t) => realState=t,
+                            match State::mov(&real_state, down, up){
+                                Ok(t) => real_state =t,
                                 Err(v)=> println!("{:?}", v),
                             }
                         }
@@ -597,21 +583,21 @@ fn apply_input(realInput: PlayerInput, mut realState: State, mut players: u8) ->
                 }
             }
             else{
-                match realState.p1_mode{
+                match real_state.p1_mode{
                     Place(_)=>{
-                        if up == down && State::place_control(&realState, down)==Ok(true){
+                        if up == down && State::place_control(&real_state, down)==Ok(true){
                             println!("placing");
-                            match State::place(&realState, down){
-                                Ok(t) => realState=t,
+                            match State::place(&real_state, down){
+                                Ok(t) => real_state =t,
                                 Err(v)=> println!("{:?}", v),
                             }
                         }
                     }
                     Move | Jump=>{
-                        if State::move_control(&realState, down, up)==Ok(true){
+                        if State::move_control(&real_state, down, up)==Ok(true){
                             println!("moving");
-                            match State::mov(&realState, down, up){
-                                Ok(t) => realState=t,
+                            match State::mov(&real_state, down, up){
+                                Ok(t) => real_state =t,
                                 Err(v)=> println!("{:?}", v),
                             }
                         }
@@ -625,7 +611,7 @@ fn apply_input(realInput: PlayerInput, mut realState: State, mut players: u8) ->
         }
         println!("applied");
     }
-    return (realState,players);
+    return (real_state, players);
 }
 
 pub fn start() -> ggez::GameResult { 

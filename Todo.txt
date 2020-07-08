@@ -1,12 +1,57 @@
-ggez:
-	Input:
-		auf Mausklicks reagieren
-		aufrufen von Zügen
-	Graphik
-	Erkennen des States:
-		Ausgeben, wenn gewonnen
-		Ausgeben ob jetzt gesetzt, gezogen, gesprungen oder geschlagen werden darf
+alte Code schnipsel
 
-	
-Spiel:
 
+/* Unwichtig geworden, falls von jemand anderem benötigt, kann es wieder auskommentiert werden
+
+        pub fn sort_by_lines(&self) -> Vec<(i8,i8,i8), U24>{
+            let mut ret: Vec<(i8,i8,i8), U24> = Vec::new();
+            for i in 1..8{
+                for field in &self.board {
+                    if field.1 == i{
+                        match ret.push(*field){
+                            Ok(_) =>{},
+                            Err(n) => println!("{:?} konnte nicht angehängt werden", n)
+                        };
+                    }
+                }
+            }
+            return ret;
+        }
+
+
+        pub fn coords_to_field(&self, x:i8, y:i8 )->Result<(i8,i8,i8),&str>{
+            for field in &self.board{
+                if field.0 == x && field.1 == y{
+                    return Ok(*field);
+                }
+            }
+            return Err("Existiert nicht")
+        }
+
+
+         pub fn printm(&self)-> String{
+                    let mut board = String::new();
+                    for x in 1..8{
+                        for y in 1..8 {
+                            let mut cont = false;
+                            for field in &self.board{
+                                if field.0 == y && field.1 ==x{
+                                    board.push_str(&field.2.to_string());
+
+                                 //   print!("{}", field.2);
+                                    cont = true;
+                                    break;
+                                }
+                            }
+                            if !cont{
+                                board.push(' ');
+                            //    print!(" ")
+                            }
+                        }
+                        board.push('\n');
+                        //println!{""};
+                    }
+                    //println!("{}", board);
+                    return board;
+                }
+         */

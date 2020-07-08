@@ -1,9 +1,7 @@
 
 
 pub mod base{
-    use std::convert::TryInto;
     use std::fmt;
-    use std::char;
     use heapless::Vec;
     use heapless::consts::U24;
     
@@ -11,13 +9,12 @@ pub mod base{
 
     #[derive(Clone, Debug, PartialEq)]
     pub enum PlayMode{
-        // Der bool ist true: Schlagen ist erlaubt, andernfalls nicht
         Place(u8),
         Move,
         Jump,
-        Remove,
+        //Remove,
+        //Allowed,
         Won,
-        Lost,
     }
 
     #[derive(Clone)]
@@ -36,7 +33,6 @@ pub mod base{
 
     impl fmt::Debug for State {
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            println!("{}", &self.printm());
             f.debug_struct("State")
              .field("p1_mode", &self.p1_mode)
              .field("p2_mode", &self.p2_mode)
@@ -68,59 +64,7 @@ pub mod base{
                 turn: 1, //TODO evtl. Seiten auswaehlen
             }
         }
-        /* Unwichtig geworden, falls von jemand anderem benötigt, kann es wieder auskommentiert werden
 
-        pub fn sort_by_lines(&self) -> Vec<(i8,i8,i8), U24>{
-            let mut ret: Vec<(i8,i8,i8), U24> = Vec::new();
-            for i in 1..8{
-                for field in &self.board {
-                    if field.1 == i{
-                        match ret.push(*field){
-                            Ok(_) =>{},
-                            Err(n) => println!("{:?} konnte nicht angehängt werden", n)
-                        }; 
-                    } 
-                }
-            }
-            return ret;
-        }
-        */
-
-        pub fn coords_to_field(&self, x:i8, y:i8 )->Result<(i8,i8,i8),&str>{
-            for field in &self.board{
-                if field.0 == x && field.1 == y{
-                    return Ok(*field);
-                }
-            }
-            return Err("Existiert nicht")
-        }
-        
-
-        pub fn printm(&self)-> String{
-            let mut board = String::new();
-            for x in 1..8{
-                for y in 1..8 {
-                    let mut cont = false;
-                    for field in &self.board{
-                        if field.0 == y && field.1 ==x{
-                            board.push_str(&field.2.to_string());
-                            
-                         //   print!("{}", field.2);
-                            cont = true;
-                            break;
-                        }
-                    }
-                    if !cont{
-                        board.push(' ');
-                    //    print!(" ")
-                    }
-                }
-                board.push('\n');
-                //println!{""};
-            }
-            //println!("{}", board);
-            return board;
-        }
 
         pub fn get_neighbor(&self, fd:(i8,i8,i8))->Vec<(i8,i8,i8), U24>{
             let mut xs: Vec<(i8,i8,i8), U24> = Vec::new();
@@ -152,8 +96,6 @@ pub mod base{
                 _ => {}
             }
             return xs;
-
-
         }
 
         pub fn spot_muehle(&self,fd:(i8,i8,i8))->i8{
@@ -556,7 +498,7 @@ pub mod base{
             /*println!("{}", x);
             println!("{}", y);
             println!("{}", z); */
-            return x+y+z+6*r;
+            return 2*x+y+z+6*r;
         }
 
 
@@ -663,33 +605,33 @@ pub mod base{
         
         }
 
-        pub fn steineSchlagen(&self)->(i8,i8,i8){
-            let mut bestStone : (i8,i8,i8) = (0,0,0);
-            let mut bestStoneValue : i8 = 0;
-            let mut bestStoneMuehle : (i8,i8,i8) = (0,0,0);
-            let mut bestStoneValueMuehle : i8 = 0;
+        pub fn steine_schlagen(&self) ->(i8, i8, i8){
+            let mut best_stone: (i8, i8, i8) = (0, 0, 0);
+            let mut best_stone_value: i8 = 0;
+            let mut best_stone_muehle: (i8, i8, i8) = (0, 0, 0);
+            let mut best_stone_value_muehle: i8 = 0;
             for field in &self.board {
-                let mut stoneValue : i8 = 1;
-                let mut stoneValueMuehle : i8 = 1;
+                let mut stone_value: i8 = 1;
+                let mut stone_value_muehle: i8 = 1;
                 if  field.2 == 0 || field.2 == -1 {
                     continue;
                 }
                 if self.spot_muehle(*field)>0 {
                     if self.spot_pot_muehle(*field)>0 {
-                        stoneValueMuehle = stoneValueMuehle + self.spot_pot_muehle(*field);
+                        stone_value_muehle = stone_value_muehle + self.spot_pot_muehle(*field);
                     }
 
                 }
                 else if self.spot_pot_muehle(*field)>0 {
-                    stoneValue = stoneValue + self.spot_pot_muehle(*field);
+                    stone_value = stone_value + self.spot_pot_muehle(*field);
                 }
-                if stoneValue > bestStoneValue {
-                    bestStone = *field;
-                    bestStoneValue = stoneValue;
+                if stone_value > best_stone_value {
+                    best_stone = *field;
+                    best_stone_value = stone_value;
                 }
-                if stoneValueMuehle > bestStoneValueMuehle {
-                    bestStoneMuehle = *field;
-                    bestStoneValueMuehle = stoneValueMuehle;
+                if stone_value_muehle > best_stone_value_muehle {
+                    best_stone_muehle = *field;
+                    best_stone_value_muehle = stone_value_muehle;
                 }
 
             }
@@ -697,11 +639,11 @@ pub mod base{
             // guckt nur ob teil einer potenziellen mühle bzw ob er überhaupt geschlagen werden darf
             //println!("hello {}",bestStoneValue);
             //print!("{} {} {} \n",bestStone.0,bestStone.1,bestStone.2);
-            if bestStone != (0,0,0) {
-                return bestStone;
+            if best_stone != (0, 0, 0) {
+                return best_stone;
             }
             else {
-                return bestStoneMuehle;
+                return best_stone_muehle;
             }
         }
 
