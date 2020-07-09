@@ -246,7 +246,6 @@ pub mod action{
 
             match &state.p1_mode{
                 PlayMode::Jump => {
-                
                     let mut a :(i8,i8,i8) = (0,0,0);
                     let mut b :(i8,i8,i8) = (0,0,0);
                     let mut c :(i8,i8,i8)= (0,0,0);
@@ -275,10 +274,9 @@ pub mod action{
                             if bet <= alph {
                                 break;
                             }
-                            
                         }
                     }
-                    },
+                },
 
                 PlayMode::Move =>{
                     //Sucht alle leeren Felder und testet auf diesen Feldern mov von allen benachbarten Feldern, die einen eigenen Stein beherbergen 
@@ -302,28 +300,26 @@ pub mod action{
                 PlayMode::Place(_) =>{
                     //sucht alle leeren Felder und testet ein plazieren auf sie
                     for field in &state.board{
-                      if field.2 == 0 {
-                          let eval :i8 = descend(depth-1,state.ki_place(*field),alph,bet);
-                          maxeval = cmp::max(eval, maxeval);
-                          alph = cmp::max(alph,eval);
-                          if bet <= alph {
+                        if field.2 == 0 {
+                            let eval :i8 = descend(depth-1,state.ki_place(*field),alph,bet);
+                            maxeval = cmp::max(eval, maxeval);
+                            alph = cmp::max(alph,eval);
+                            if bet <= alph {
                             break;
-                          }
-                      }  
+                            }
+                        }
                     }
                 },
+
                 _=>{print!("6 Error Max in Start depth: {}, P1-Stones:{},P2-Stones:{} \n",depth,state.p1_stones,state.p2_stones)}
                     
             }
-
         return  maxeval;   
         }
         else{
-            
 
             match &state.p2_mode{
                 PlayMode::Jump => {
-                
                     let mut a :(i8,i8,i8) = (0,0,0);
                     let mut b :(i8,i8,i8) = (0,0,0);
                     let mut c :(i8,i8,i8)= (0,0,0);
@@ -341,19 +337,19 @@ pub mod action{
                             }
                         }
                     }
-                        for field in &state.board{
-                            if field.2 == 0{
-                                let eval = super::super::min_three(descend( depth-1 ,state.ki_mov(a, *field),alph,bet),
-                                    descend( depth-1 ,state.ki_mov(b, *field),alph,bet),
-                                    descend( depth-1 ,state.ki_mov(c, *field),alph,bet));
-                                mineval = cmp::min(eval,mineval);
-                                bet = cmp::min(bet,eval);
-                                if bet <= alph {
-                                    break;
-                                }
+                    for field in &state.board{
+                        if field.2 == 0{
+                            let eval = super::super::min_three(descend( depth-1 ,state.ki_mov(a, *field),alph,bet),
+                                                               descend( depth-1 ,state.ki_mov(b, *field),alph,bet),
+                                                               descend( depth-1 ,state.ki_mov(c, *field),alph,bet));
+                            mineval = cmp::min(eval,mineval);
+                            bet = cmp::min(bet,eval);
+                            if bet <= alph {
+                                break;
                             }
                         }
-                    },
+                    }
+                },
 
                 PlayMode::Move =>{
                     for field in &state.board{
@@ -371,6 +367,7 @@ pub mod action{
                         }
                     }
                 },
+
                 PlayMode::Place(_) =>{
                     for field in &state.board{
                         if field.2 == 0 {
@@ -383,14 +380,14 @@ pub mod action{
                         }  
                     }
                 },
+
                 _=>{print!("8 Error Jump in Start depth: {}, P1-Stones:{},P2-Stones:{} \n",depth,state.p1_stones,state.p2_stones)}
                     
             }
-
         return  mineval;
-
         }
-
     }
+
+
 
 }
